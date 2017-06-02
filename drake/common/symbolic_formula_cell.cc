@@ -153,7 +153,8 @@ bool FormulaTrue::Less(const FormulaCell& f) const {
 
 bool FormulaTrue::Evaluate(const Environment&) const { return true; }
 
-Formula FormulaTrue::Substitute(const Substitution&) const {
+Formula FormulaTrue::Substitute(const ExpressionSubstitution&,
+                                const FormulaSubstitution&) const {
   return Formula::True();
 }
 
@@ -179,7 +180,8 @@ bool FormulaFalse::Less(const FormulaCell& f) const {
 
 bool FormulaFalse::Evaluate(const Environment&) const { return false; }
 
-Formula FormulaFalse::Substitute(const Substitution&) const {
+Formula FormulaFalse::Substitute(const ExpressionSubstitution&,
+                                 const FormulaSubstitution&) const {
   return Formula::False();
 }
 
@@ -223,9 +225,12 @@ bool FormulaVar::Evaluate(const Environment& env) const {
   }
 }
 
-Formula FormulaVar::Substitute(const Substitution&) const {
-  // TODO(soonho-tri): Add a substitution (Variable -> Formula) and use it
-  // here. For now, `Substitute` does nothing for Boolean variables.
+Formula FormulaVar::Substitute(const ExpressionSubstitution&,
+                               const FormulaSubstitution& formula_subst) const {
+  const auto it = formula_subst.find(var_);
+  if (it != formula_subst.end()) {
+    return it->second;
+  }
   return Formula{var_};
 }
 
@@ -266,9 +271,10 @@ bool FormulaEq::Evaluate(const Environment& env) const {
       get_lhs_expression(), get_rhs_expression(), env);
 }
 
-Formula FormulaEq::Substitute(const Substitution& s) const {
-  return get_lhs_expression().Substitute(s) ==
-         get_rhs_expression().Substitute(s);
+Formula FormulaEq::Substitute(const ExpressionSubstitution& expr_subst,
+                              const FormulaSubstitution& formula_subst) const {
+  return get_lhs_expression().Substitute(expr_subst, formula_subst) ==
+         get_rhs_expression().Substitute(expr_subst, formula_subst);
 }
 
 ostream& FormulaEq::Display(ostream& os) const {
@@ -284,9 +290,10 @@ bool FormulaNeq::Evaluate(const Environment& env) const {
       get_lhs_expression(), get_rhs_expression(), env);
 }
 
-Formula FormulaNeq::Substitute(const Substitution& s) const {
-  return get_lhs_expression().Substitute(s) !=
-         get_rhs_expression().Substitute(s);
+Formula FormulaNeq::Substitute(const ExpressionSubstitution& expr_subst,
+                               const FormulaSubstitution& formula_subst) const {
+  return get_lhs_expression().Substitute(expr_subst, formula_subst) !=
+         get_rhs_expression().Substitute(expr_subst, formula_subst);
 }
 
 ostream& FormulaNeq::Display(ostream& os) const {
@@ -302,9 +309,10 @@ bool FormulaGt::Evaluate(const Environment& env) const {
          get_rhs_expression().Evaluate(env);
 }
 
-Formula FormulaGt::Substitute(const Substitution& s) const {
-  return get_lhs_expression().Substitute(s) >
-         get_rhs_expression().Substitute(s);
+Formula FormulaGt::Substitute(const ExpressionSubstitution& expr_subst,
+                              const FormulaSubstitution& formula_subst) const {
+  return get_lhs_expression().Substitute(expr_subst, formula_subst) >
+         get_rhs_expression().Substitute(expr_subst, formula_subst);
 }
 
 ostream& FormulaGt::Display(ostream& os) const {
@@ -320,9 +328,10 @@ bool FormulaGeq::Evaluate(const Environment& env) const {
          get_rhs_expression().Evaluate(env);
 }
 
-Formula FormulaGeq::Substitute(const Substitution& s) const {
-  return get_lhs_expression().Substitute(s) >=
-         get_rhs_expression().Substitute(s);
+Formula FormulaGeq::Substitute(const ExpressionSubstitution& expr_subst,
+                               const FormulaSubstitution& formula_subst) const {
+  return get_lhs_expression().Substitute(expr_subst, formula_subst) >=
+         get_rhs_expression().Substitute(expr_subst, formula_subst);
 }
 
 ostream& FormulaGeq::Display(ostream& os) const {
@@ -338,9 +347,10 @@ bool FormulaLt::Evaluate(const Environment& env) const {
          get_rhs_expression().Evaluate(env);
 }
 
-Formula FormulaLt::Substitute(const Substitution& s) const {
-  return get_lhs_expression().Substitute(s) <
-         get_rhs_expression().Substitute(s);
+Formula FormulaLt::Substitute(const ExpressionSubstitution& expr_subst,
+                              const FormulaSubstitution& formula_subst) const {
+  return get_lhs_expression().Substitute(expr_subst, formula_subst) <
+         get_rhs_expression().Substitute(expr_subst, formula_subst);
 }
 
 ostream& FormulaLt::Display(ostream& os) const {
@@ -356,9 +366,10 @@ bool FormulaLeq::Evaluate(const Environment& env) const {
          get_rhs_expression().Evaluate(env);
 }
 
-Formula FormulaLeq::Substitute(const Substitution& s) const {
-  return get_lhs_expression().Substitute(s) <=
-         get_rhs_expression().Substitute(s);
+Formula FormulaLeq::Substitute(const ExpressionSubstitution& expr_subst,
+                               const FormulaSubstitution& formula_subst) const {
+  return get_lhs_expression().Substitute(expr_subst, formula_subst) <=
+         get_rhs_expression().Substitute(expr_subst, formula_subst);
 }
 
 ostream& FormulaLeq::Display(ostream& os) const {
@@ -383,10 +394,11 @@ bool FormulaAnd::Evaluate(const Environment& env) const {
   return true;
 }
 
-Formula FormulaAnd::Substitute(const Substitution& s) const {
+Formula FormulaAnd::Substitute(const ExpressionSubstitution& expr_subst,
+                               const FormulaSubstitution& formula_subst) const {
   Formula ret{Formula::True()};
   for (const auto& f : get_operands()) {
-    ret = ret && f.Substitute(s);
+    ret = ret && f.Substitute(expr_subst, formula_subst);
     // short-circuiting
     if (is_false(ret)) {
       return ret;
@@ -416,10 +428,11 @@ bool FormulaOr::Evaluate(const Environment& env) const {
   return false;
 }
 
-Formula FormulaOr::Substitute(const Substitution& s) const {
+Formula FormulaOr::Substitute(const ExpressionSubstitution& expr_subst,
+                              const FormulaSubstitution& formula_subst) const {
   Formula ret{Formula::False()};
   for (const auto& f : get_operands()) {
-    ret = ret || f.Substitute(s);
+    ret = ret || f.Substitute(expr_subst, formula_subst);
     // short-circuiting
     if (is_true(ret)) {
       return ret;
@@ -455,8 +468,9 @@ bool FormulaNot::Evaluate(const Environment& env) const {
   return !f_.Evaluate(env);
 }
 
-Formula FormulaNot::Substitute(const Substitution& s) const {
-  return !f_.Substitute(s);
+Formula FormulaNot::Substitute(const ExpressionSubstitution& expr_subst,
+                               const FormulaSubstitution& formula_subst) const {
+  return !f_.Substitute(expr_subst, formula_subst);
 }
 
 ostream& FormulaNot::Display(ostream& os) const {
@@ -500,15 +514,22 @@ bool FormulaForall::Evaluate(const Environment&) const {
   throw runtime_error("not implemented yet");
 }
 
-Formula FormulaForall::Substitute(const Substitution& s) const {
+Formula FormulaForall::Substitute(
+    const ExpressionSubstitution& expr_subst,
+    const FormulaSubstitution& formula_subst) const {
   // Quantified variables are already bound and should not be substituted by s.
   // We construct a new substitution new_s from s by removing the entries of
   // bound variables.
-  Substitution new_s{s};
+  ExpressionSubstitution new_expr_subst{expr_subst};
+  FormulaSubstitution new_formula_subst{formula_subst};
   for (const Variable& var : vars_) {
-    new_s.erase(var);
+    if (var.get_type() == Variable::Type::BOOLEAN) {
+      new_formula_subst.erase(var);
+    } else {
+      new_expr_subst.erase(var);
+    }
   }
-  return forall(vars_, f_.Substitute(new_s));
+  return forall(vars_, f_.Substitute(new_expr_subst, new_formula_subst));
 }
 
 ostream& FormulaForall::Display(ostream& os) const {
@@ -539,8 +560,10 @@ bool FormulaIsnan::Evaluate(const Environment& env) const {
   return std::isnan(e_.Evaluate(env));
 }
 
-Formula FormulaIsnan::Substitute(const Substitution& s) const {
-  return isnan(e_.Substitute(s));
+Formula FormulaIsnan::Substitute(
+    const ExpressionSubstitution& expr_subst,
+    const FormulaSubstitution& formula_subst) const {
+  return isnan(e_.Substitute(expr_subst, formula_subst));
 }
 
 ostream& FormulaIsnan::Display(ostream& os) const {
@@ -629,9 +652,13 @@ bool FormulaPositiveSemidefinite::Evaluate(const Environment&) const {
       "Checking positive_semidefinite(M) is not yet implemented.");
 }
 
-Formula FormulaPositiveSemidefinite::Substitute(const Substitution& s) const {
+Formula FormulaPositiveSemidefinite::Substitute(
+    const ExpressionSubstitution& expr_subst,
+    const FormulaSubstitution& formula_subst) const {
   return positive_semidefinite(
-      m_.unaryExpr([&s](const Expression& e) { return e.Substitute(s); }));
+      m_.unaryExpr([&expr_subst, &formula_subst](const Expression& e) {
+        return e.Substitute(expr_subst, formula_subst);
+      }));
 }
 
 ostream& FormulaPositiveSemidefinite::Display(ostream& os) const {
