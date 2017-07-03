@@ -20,7 +20,6 @@
 #include "drake/common/dummy_value.h"
 #include "drake/common/hash.h"
 #include "drake/common/number_traits.h"
-#include "drake/common/polynomial.h"
 #include "drake/common/symbolic_environment.h"
 #include "drake/common/symbolic_variable.h"
 #include "drake/common/symbolic_variables.h"
@@ -219,12 +218,6 @@ class Expression {
 
   /** Checks if this symbolic expression is convertible to Polynomial. */
   bool is_polynomial() const;
-
-  /** Returns a Polynomial representing this expression.
-   *  Note that the ID of a variable is preserved in this translation.
-   *  \pre{is_polynomial() is true.}
-   */
-  Polynomial<double> ToPolynomial() const;
 
   /** Evaluates under a given environment (by default, an empty environment).
    *  @throws std::runtime_error if NaN is detected during evaluation.
