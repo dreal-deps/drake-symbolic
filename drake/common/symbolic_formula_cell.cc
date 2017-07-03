@@ -8,16 +8,34 @@
 #include <stdexcept>
 
 #include "drake/common/drake_assert.h"
-#include "drake/common/drake_compat.h"
 #include "drake/common/hash.h"
 #include "drake/common/symbolic_environment.h"
 #include "drake/common/symbolic_expression.h"
 #include "drake/common/symbolic_formula.h"
 #include "drake/common/symbolic_variable.h"
 #include "drake/common/symbolic_variables.h"
-#include "drake/math/matrix_util.h"
 
 namespace drake {
+namespace math {
+/// Determines if a matrix is symmetric. If std::equal_to<>()(matrix(i, j),
+/// matrix(j, i)) is true for all i, j, then the matrix is symmetric.
+template <typename Derived>
+bool IsSymmetric(const Eigen::MatrixBase<Derived>& matrix) {
+  using DerivedScalar = typename Derived::Scalar;
+  if (matrix.rows() != matrix.cols()) {
+    return false;
+  }
+  for (int i = 0; i < static_cast<int>(matrix.rows()); ++i) {
+    for (int j = i + 1; j < static_cast<int>(matrix.cols()); ++j) {
+      if (!std::equal_to<DerivedScalar>()(matrix(i, j), matrix(j, i))) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+}  // namespace math
+
 namespace symbolic {
 
 using std::equal;
