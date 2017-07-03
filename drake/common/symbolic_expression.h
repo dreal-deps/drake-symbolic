@@ -14,12 +14,10 @@
 
 #include <Eigen/Core>
 
-#include "drake/common/cond.h"
 #include "drake/common/drake_assert.h"
 #include "drake/common/drake_copyable.h"
 #include "drake/common/eigen_types.h"
 #include "drake/common/hash.h"
-#include "drake/common/number_traits.h"
 #include "drake/common/symbolic_environment.h"
 #include "drake/common/symbolic_variable.h"
 #include "drake/common/symbolic_variables.h"
@@ -722,11 +720,6 @@ struct hash_value<symbolic::Expression> {
   }
 };
 
-/** Specializes is_numeric to be false for symbolic::Expression type. */
-template <>
-struct is_numeric<symbolic::Expression> {
-  static constexpr bool value = false;
-};
 }  // namespace drake
 
 namespace std {
