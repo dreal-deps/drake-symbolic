@@ -191,8 +191,8 @@ FormulaVar::FormulaVar(const Variable& v)
     : FormulaCell{FormulaKind::Var, hash_value<Variable>{}(v)}, var_{v} {
   // Dummy symbolic variable (ID = 0) should not be used in constructing
   // symbolic formulas.
-  DRAKE_DEMAND(!var_.is_dummy());
-  DRAKE_DEMAND(var_.get_type() == Variable::Type::BOOLEAN);
+  DRAKE_ASSERT(!var_.is_dummy());
+  DRAKE_ASSERT(var_.get_type() == Variable::Type::BOOLEAN);
 }
 
 Variables FormulaVar::GetFreeVariables() const { return Variables{var_}; }

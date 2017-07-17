@@ -263,10 +263,10 @@ ExpressionVar::ExpressionVar(const Variable& v)
       var_{v} {
   // Dummy symbolic variable (ID = 0) should not be used in constructing
   // symbolic expressions.
-  DRAKE_DEMAND(!var_.is_dummy());
+  DRAKE_ASSERT(!var_.is_dummy());
   // Boolean symbolic variable should not be used in constructing symbolic
   // expressions.
-  DRAKE_DEMAND(var_.get_type() != Variable::Type::BOOLEAN);
+  DRAKE_ASSERT(var_.get_type() != Variable::Type::BOOLEAN);
 }
 
 Variables ExpressionVar::GetVariables() const { return {get_variable()}; }
@@ -340,7 +340,7 @@ bool ExpressionConstant::Less(const ExpressionCell& e) const {
 }
 
 double ExpressionConstant::Evaluate(const Environment&) const {
-  DRAKE_DEMAND(!std::isnan(v_));
+  DRAKE_ASSERT(!std::isnan(v_));
   return v_;
 }
 
@@ -348,7 +348,7 @@ Expression ExpressionConstant::Expand() const { return Expression{v_}; }
 
 Expression ExpressionConstant::Substitute(const ExpressionSubstitution&,
                                           const FormulaSubstitution&) const {
-  DRAKE_DEMAND(!std::isnan(v_));
+  DRAKE_ASSERT(!std::isnan(v_));
   return Expression{v_};
 }
 

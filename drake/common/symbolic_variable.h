@@ -135,7 +135,7 @@ typename std::enable_if<
     bool>::type
 CheckStructuralEquality(const DerivedA& m1, const DerivedB& m2) {
   EIGEN_STATIC_ASSERT_SAME_MATRIX_SIZE(DerivedA, DerivedB);
-  DRAKE_DEMAND(m1.rows() == m2.rows() && m1.cols() == m2.cols());
+  DRAKE_ASSERT(m1.rows() == m2.rows() && m1.cols() == m2.cols());
   return m1.binaryExpr(m2, std::equal_to<Variable>{}).all();
 }
 }  // namespace symbolic

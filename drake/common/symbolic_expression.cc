@@ -836,7 +836,7 @@ Expression operator-(const Variable& var) { return -Expression{var}; }
 
 MatrixX<Expression> Jacobian(const Eigen::Ref<const VectorX<Expression>>& f,
                              const vector<Variable>& vars) {
-  DRAKE_DEMAND(!vars.empty());
+  DRAKE_ASSERT(!vars.empty());
   const Eigen::Ref<const VectorX<Expression>>::Index n{f.size()};
   const size_t m{vars.size()};
   MatrixX<Expression> J(n, m);

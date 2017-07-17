@@ -22,7 +22,7 @@ namespace symbolic {
 /// @pre e.is_polynomial() is true.
 template <typename Result, typename Visitor, typename... Args>
 Result VisitPolynomial(Visitor* v, const Expression& e, Args&&... args) {
-  DRAKE_DEMAND(e.is_polynomial());
+  DRAKE_ASSERT(e.is_polynomial());
   switch (e.get_kind()) {
     case ExpressionKind::Constant:
       return v->VisitConstant(e, std::forward<Args>(args)...);
@@ -63,7 +63,7 @@ Result VisitPolynomial(Visitor* v, const Expression& e, Args&&... args) {
     case ExpressionKind::Max:
     case ExpressionKind::IfThenElse:
     case ExpressionKind::UninterpretedFunction:
-      // Should not be reachable because of `DRAKE_DEMAND(e.is_polynomial())` at
+      // Should not be reachable because of `DRAKE_ASSERT(e.is_polynomial())` at
       // the top.
       DRAKE_ABORT();
   }
