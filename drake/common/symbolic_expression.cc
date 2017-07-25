@@ -174,7 +174,7 @@ Expression Expression::Expand() const {
 Expression Expression::Substitute(const Variable& var,
                                   const Expression& e) const {
   DRAKE_ASSERT(ptr_ != nullptr);
-  return ptr_->Substitute({{var, e}}, {});
+  return ptr_->Substitute({{var, e}}, FormulaSubstitution{});
 }
 
 Expression Expression::Substitute(
@@ -191,7 +191,7 @@ Expression Expression::Substitute(
     const ExpressionSubstitution& expr_subst) const {
   DRAKE_ASSERT(ptr_ != nullptr);
   if (!expr_subst.empty()) {
-    return ptr_->Substitute(expr_subst, {});
+    return ptr_->Substitute(expr_subst, FormulaSubstitution{});
   }
   return *this;
 }
@@ -200,7 +200,7 @@ Expression Expression::Substitute(
     const FormulaSubstitution& formula_subst) const {
   DRAKE_ASSERT(ptr_ != nullptr);
   if (!formula_subst.empty()) {
-    return ptr_->Substitute({}, formula_subst);
+    return ptr_->Substitute(ExpressionSubstitution{}, formula_subst);
   }
   return *this;
 }

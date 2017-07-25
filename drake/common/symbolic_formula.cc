@@ -83,12 +83,12 @@ bool Formula::Evaluate(const Environment& env) const {
 
 Formula Formula::Substitute(const Variable& var, const Expression& e) const {
   DRAKE_ASSERT(ptr_ != nullptr);
-  return ptr_->Substitute({{var, e}}, {});
+  return ptr_->Substitute({{var, e}}, FormulaSubstitution{});
 }
 
 Formula Formula::Substitute(const Variable& var, const Formula& f) const {
   DRAKE_ASSERT(ptr_ != nullptr);
-  return ptr_->Substitute({}, {{var, f}});
+  return ptr_->Substitute(ExpressionSubstitution{}, {{var, f}});
 }
 
 Formula Formula::Substitute(const ExpressionSubstitution& expr_subst,
@@ -103,7 +103,7 @@ Formula Formula::Substitute(const ExpressionSubstitution& expr_subst,
 Formula Formula::Substitute(const ExpressionSubstitution& expr_subst) const {
   DRAKE_ASSERT(ptr_ != nullptr);
   if (!expr_subst.empty()) {
-    return ptr_->Substitute(expr_subst, {});
+    return ptr_->Substitute(expr_subst, FormulaSubstitution{});
   }
   return *this;
 }
@@ -111,7 +111,7 @@ Formula Formula::Substitute(const ExpressionSubstitution& expr_subst) const {
 Formula Formula::Substitute(const FormulaSubstitution& formula_subst) const {
   DRAKE_ASSERT(ptr_ != nullptr);
   if (!formula_subst.empty()) {
-    return ptr_->Substitute({}, formula_subst);
+    return ptr_->Substitute(ExpressionSubstitution{}, formula_subst);
   }
   return *this;
 }
