@@ -1,0 +1,5 @@
+bazel-bin
+bazel-drake-symbolic
+bazel-genfiles
+bazel-out
+bazel-testlogs

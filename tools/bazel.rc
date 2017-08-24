@@ -1,0 +1,10 @@
+# Default to an optimized build.
+build -c opt
+
+build --strip=never
+build --crosstool_top=//tools:default-toolchain
+# Only show warnings from the project, not from externals.
+build --output_filter="^//"
+
+# Default test options.
+test --test_output=errors
