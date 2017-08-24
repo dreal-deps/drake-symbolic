@@ -22,44 +22,40 @@ namespace symbolic {
 
 /** Kinds of symbolic formulas. */
 enum class FormulaKind {
-  False,                 ///< ⊥
-  True,                  ///< ⊤
-  Var,                   ///< Boolean Variable
-  Eq,                    ///< =
-  Neq,                   ///< !=
-  Gt,                    ///< >
-  Geq,                   ///< >=
-  Lt,                    ///< <
-  Leq,                   ///< <=
-  And,                   ///< Conjunction (∧)
-  Or,                    ///< Disjunction (∨)
-  Not,                   ///< Negation (¬)
-  Forall,                ///< Universal quantification (∀)
-  Isnan,                 ///< NaN check predicate
-  PositiveSemidefinite,  ///< Positive semidefinite matrix
+  False,   ///< ⊥
+  True,    ///< ⊤
+  Var,     ///< Boolean Variable
+  Eq,      ///< =
+  Neq,     ///< !=
+  Gt,      ///< >
+  Geq,     ///< >=
+  Lt,      ///< <
+  Leq,     ///< <=
+  And,     ///< Conjunction (∧)
+  Or,      ///< Disjunction (∨)
+  Not,     ///< Negation (¬)
+  Forall,  ///< Universal quantification (∀)
 };
 
 // Total ordering between FormulaKinds
 bool operator<(FormulaKind k1, FormulaKind k2);
 
-class FormulaCell;                  // In symbolic/symbolic_formula_cell.h
-class FormulaFalse;                 // In symbolic/symbolic_formula_cell.h
-class FormulaTrue;                  // In symbolic/symbolic_formula_cell.h
-class FormulaVar;                   // In symbolic/symbolic_formula_cell.h
-class RelationalFormulaCell;        // In symbolic/symbolic_formula_cell.h
-class FormulaEq;                    // In symbolic/symbolic_formula_cell.h
-class FormulaNeq;                   // In symbolic/symbolic_formula_cell.h
-class FormulaGt;                    // In symbolic/symbolic_formula_cell.h
-class FormulaGeq;                   // In symbolic/symbolic_formula_cell.h
-class FormulaLt;                    // In symbolic/symbolic_formula_cell.h
-class FormulaLeq;                   // In symbolic/symbolic_formula_cell.h
-class NaryFormulaCell;              // In symbolic/symbolic_formula_cell.h
-class FormulaNot;                   // In symbolic/symbolic_formula_cell.h
-class FormulaAnd;                   // In symbolic/symbolic_formula_cell.h
-class FormulaOr;                    // In symbolic/symbolic_formula_cell.h
-class FormulaForall;                // In symbolic/symbolic_formula_cell.h
-class FormulaIsnan;                 // In symbolic/symbolic_formula_cell.h
-class FormulaPositiveSemidefinite;  // In symbolic/symbolic_formula_cell.h
+class FormulaCell;            // In symbolic/symbolic_formula_cell.h
+class FormulaFalse;           // In symbolic/symbolic_formula_cell.h
+class FormulaTrue;            // In symbolic/symbolic_formula_cell.h
+class FormulaVar;             // In symbolic/symbolic_formula_cell.h
+class RelationalFormulaCell;  // In symbolic/symbolic_formula_cell.h
+class FormulaEq;              // In symbolic/symbolic_formula_cell.h
+class FormulaNeq;             // In symbolic/symbolic_formula_cell.h
+class FormulaGt;              // In symbolic/symbolic_formula_cell.h
+class FormulaGeq;             // In symbolic/symbolic_formula_cell.h
+class FormulaLt;              // In symbolic/symbolic_formula_cell.h
+class FormulaLeq;             // In symbolic/symbolic_formula_cell.h
+class NaryFormulaCell;        // In symbolic/symbolic_formula_cell.h
+class FormulaNot;             // In symbolic/symbolic_formula_cell.h
+class FormulaAnd;             // In symbolic/symbolic_formula_cell.h
+class FormulaOr;              // In symbolic/symbolic_formula_cell.h
+class FormulaForall;          // In symbolic/symbolic_formula_cell.h
 
 /** Represents a symbolic form of a first-order logic formula.
 
@@ -234,8 +230,6 @@ class Formula {
   friend bool is_disjunction(const Formula& f);
   friend bool is_negation(const Formula& f);
   friend bool is_forall(const Formula& f);
-  friend bool is_isnan(const Formula& f);
-  friend bool is_positive_semidefinite(const Formula& f);
 
   // Note that the following cast functions are only for low-level operations
   // and not exposed to the user of symbolic_formula.h. These functions are
@@ -256,9 +250,6 @@ class Formula {
   friend std::shared_ptr<FormulaOr> to_disjunction(const Formula& f);
   friend std::shared_ptr<FormulaNot> to_negation(const Formula& f);
   friend std::shared_ptr<FormulaForall> to_forall(const Formula& f);
-  friend std::shared_ptr<FormulaIsnan> to_isnan(const Formula& f);
-  friend std::shared_ptr<FormulaPositiveSemidefinite> to_positive_semidefinite(
-      const Formula& f);
 
  private:
   std::shared_ptr<FormulaCell> ptr_;
@@ -307,96 +298,6 @@ Formula operator<=(const Expression& e1, const Expression& e2);
 Formula operator>(const Expression& e1, const Expression& e2);
 Formula operator>=(const Expression& e1, const Expression& e2);
 
-/** Returns a Formula for the predicate isnan(e) to the given expression. This
- * serves as the argument-dependent lookup related to std::isnan(double). When
- * evaluated, this Formula will return false when the e.Evaluate() is not NaN.
- * @throws std::runtime_error if NaN is detected during evaluation.
- */
-Formula isnan(const Expression& e);
-
-/** Returns a symbolic formula constraining @p m to be a positive-semidefinite
- * matrix. By definition, a symmetric matrix @p m is positive-semidefinte if xᵀ
- * m x ≥ 0 for all vector x ∈ ℝⁿ.
- *
- * @throws std::runtime_error if @p m is not symmetric.
- *
- * @note This method checks if @p m is symmetric by calling `math::IsSymmetric`
- * function which can be costly. If you want to avoid it, please consider using
- * `positive_semidefinite(m.triangularView<Eigen::Lower>())` or
- * `positive_semidefinite(m.triangularView<Eigen::Upper>())` instead of
- * `positive_semidefinite(m)`.
- */
-Formula positive_semidefinite(const Eigen::Ref<const MatrixX<Expression>>& m);
-
-/** Constructs and returns a symbolic positive-semidefinite formula from @p
- * m. If @p mode is Eigen::Lower, it's using the lower-triangular part of @p m
- * to construct a positive-semidefinite formula. If @p mode is Eigen::Upper, the
- * upper-triangular part of @p m is used. It throws std::runtime_error if @p has
- * other values. See the following code snippet.
- *
- * @code
- * Eigen::Matrix<Expression, 2, 2> m;
- * m << 1.0, 2.0,
- *      3.0, 4.0;
- *
- * const Formula psd_l{positive_semidefinite(m, Eigen::Lower)};
- * // psd_l includes [1.0 3.0]
- * //                [3.0 4.0].
- *
- * const Formula psd_u{positive_semidefinite(m, Eigen::Upper)};
- * // psd_u includes [1.0 2.0]
- * //                [2.0 4.0].
- * @endcode
- */
-Formula positive_semidefinite(const MatrixX<Expression>& m,
-                              Eigen::UpLoType mode);
-
-/** Constructs and returns a symbolic positive-semidefinite formula from a lower
- * triangular-view @p l. See the following code snippet.
- *
- * @code
- * Eigen::Matrix<Expression, 2, 2> m;
- * m << 1.0, 2.0,
- *      3.0, 4.0;
- *
- * Formula psd{positive_semidefinite(m.triangularView<Eigen::Lower>())};
- * // psd includes [1.0 3.0]
- * //              [3.0 4.0].
- * @endcode
- */
-template <typename Derived>
-typename std::enable_if<
-    std::is_same<typename Eigen::internal::traits<Derived>::XprKind,
-                 Eigen::MatrixXpr>::value &&
-        std::is_same<typename Derived::Scalar, Expression>::value,
-    Formula>::type
-positive_semidefinite(const Eigen::TriangularView<Derived, Eigen::Lower>& l) {
-  return positive_semidefinite(l, Eigen::Lower);
-}
-
-/** Constructs and returns a symbolic positive-semidefinite formula from an
- * upper triangular-view @p u. See the following code snippet.
- *
- * @code
- * Eigen::Matrix<Expression, 2, 2> m;
- * m << 1.0, 2.0,
- *      3.0, 4.0;
- *
- * Formula psd{positive_semidefinite(m.triangularView<Eigen::Upper>())};
- * // psd includes [1.0 2.0]
- * //              [2.0 4.0].
- * @endcode
- */
-template <typename Derived>
-typename std::enable_if<
-    std::is_same<typename Eigen::internal::traits<Derived>::XprKind,
-                 Eigen::MatrixXpr>::value &&
-        std::is_same<typename Derived::Scalar, Expression>::value,
-    Formula>::type
-positive_semidefinite(const Eigen::TriangularView<Derived, Eigen::Upper>& u) {
-  return positive_semidefinite(u, Eigen::Upper);
-}
-
 std::ostream& operator<<(std::ostream& os, const Formula& f);
 
 /** Checks if @p f is structurally equal to False formula. */
@@ -429,10 +330,6 @@ bool is_nary(const Formula& f);
 bool is_negation(const Formula& f);
 /** Checks if @p f is a Forall formula (∀). */
 bool is_forall(const Formula& f);
-/** Checks if @p f is an isnan formula. */
-bool is_isnan(const Formula& f);
-/** Checks if @p f is a positive-semidefinite formula. */
-bool is_positive_semidefinite(const Formula& f);
 
 /** Returns the embedded variable in the variable formula @p f.
  *  @pre @p f is a variable formula.

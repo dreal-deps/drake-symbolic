@@ -13,8 +13,7 @@ namespace symbolic {
 /// take @p f and @p args: `VisitFalse`, `VisitTrue`, `VisitVariable`,
 /// `VisitEqualTo`, VisitNotEqualTo, VisitGreaterThan,
 /// `VisitGreaterThanOrEqualTo`, `VisitLessThan`, `VisitLessThanOrEqualTo`,
-/// `VisitConjunction`, `VisitDisjunction`, `VisitNegation`, `VisitForall`,
-/// `VisitIsnan`, `VisitPositiveSemidefinite`.
+/// `VisitConjunction`, `VisitDisjunction`, `VisitNegation`, `VisitForall`.
 ///
 /// Check the implementation of @c NegationNormalFormConverter class in
 /// symbolic/test/symbolic_formula_visitor_test.cc file to find an example.
@@ -47,10 +46,6 @@ Result VisitFormula(Visitor* v, const Formula& f, Args&&... args) {
       return v->VisitNegation(f, std::forward<Args>(args)...);
     case FormulaKind::Forall:
       return v->VisitForall(f, std::forward<Args>(args)...);
-    case FormulaKind::Isnan:
-      return v->VisitIsnan(f, std::forward<Args>(args)...);
-    case FormulaKind::PositiveSemidefinite:
-      return v->VisitPositiveSemidefinite(f, std::forward<Args>(args)...);
   }
   // Should not be reachable. But we need the following to avoid "control
   // reaches end of non-void function" gcc-warning.

@@ -305,30 +305,6 @@ Formula operator>=(const Expression& e1, const Expression& e2) {
   return Formula{make_shared<FormulaGeq>(e1, e2)};
 }
 
-Formula isnan(const Expression& e) {
-  return Formula{make_shared<FormulaIsnan>(e)};
-}
-
-Formula positive_semidefinite(const Eigen::Ref<const MatrixX<Expression>>& m) {
-  return Formula{make_shared<FormulaPositiveSemidefinite>(m)};
-}
-
-Formula positive_semidefinite(const MatrixX<Expression>& m,
-                              const Eigen::UpLoType mode) {
-  switch (mode) {
-    case Eigen::Lower:
-      return Formula{make_shared<FormulaPositiveSemidefinite>(
-          m.triangularView<Eigen::Lower>())};
-    case Eigen::Upper:
-      return Formula{make_shared<FormulaPositiveSemidefinite>(
-          m.triangularView<Eigen::Upper>())};
-    default:
-      throw std::runtime_error(
-          "positive_semidefinite is called with a mode which is neither "
-          "Eigen::Lower nor Eigen::Upper.");
-  }
-}
-
 bool is_false(const Formula& f) { return is_false(*f.ptr_); }
 bool is_true(const Formula& f) { return is_true(*f.ptr_); }
 bool is_variable(const Formula& f) { return is_variable(*f.ptr_); }
@@ -354,10 +330,6 @@ bool is_nary(const Formula& f) {
 }
 bool is_negation(const Formula& f) { return is_negation(*f.ptr_); }
 bool is_forall(const Formula& f) { return is_forall(*f.ptr_); }
-bool is_isnan(const Formula& f) { return is_isnan(*f.ptr_); }
-bool is_positive_semidefinite(const Formula& f) {
-  return is_positive_semidefinite(*f.ptr_);
-}
 
 const Variable& get_variable(const Formula& f) {
   assert(is_variable(f));
@@ -389,10 +361,6 @@ const Formula& get_quantified_formula(const Formula& f) {
   return to_forall(f)->get_quantified_formula();
 }
 
-const MatrixX<Expression>& get_matrix_in_positive_semidefinite(
-    const Formula& f) {
-  return to_positive_semidefinite(f)->get_matrix();
-}
 }  // namespace symbolic
 }  // namespace drake
 }  // namespace dreal

@@ -536,135 +536,6 @@ ostream& FormulaForall::Display(ostream& os) const {
   return os << "forall(" << vars_ << ". " << f_ << ")";
 }
 
-FormulaIsnan::FormulaIsnan(const Expression& e)
-    : FormulaCell{FormulaKind::Isnan, e.get_hash()}, e_{e} {}
-
-Variables FormulaIsnan::GetFreeVariables() const { return e_.GetVariables(); }
-
-bool FormulaIsnan::EqualTo(const FormulaCell& f) const {
-  // Formula::EqualTo guarantees the following assertion.
-  assert(get_kind() == f.get_kind());
-  const FormulaIsnan& f_isnan{static_cast<const FormulaIsnan&>(f)};
-  return e_.EqualTo(f_isnan.e_);
-}
-
-bool FormulaIsnan::Less(const FormulaCell& f) const {
-  // Formula::Less guarantees the following assertion.
-  assert(get_kind() == f.get_kind());
-  const FormulaIsnan& f_isnan{static_cast<const FormulaIsnan&>(f)};
-  return e_.Less(f_isnan.e_);
-}
-
-bool FormulaIsnan::Evaluate(const Environment& env) const {
-  // Note that it throws std::runtime_error if it detects NaN during evaluation.
-  return std::isnan(e_.Evaluate(env));
-}
-
-Formula FormulaIsnan::Substitute(
-    const ExpressionSubstitution& expr_subst,
-    const FormulaSubstitution& formula_subst) const {
-  return isnan(e_.Substitute(expr_subst, formula_subst));
-}
-
-ostream& FormulaIsnan::Display(ostream& os) const {
-  return os << "isnan(" << e_ << ")";
-}
-
-FormulaPositiveSemidefinite::FormulaPositiveSemidefinite(
-    const Eigen::Ref<const MatrixX<Expression>>& m)
-    : FormulaCell{FormulaKind::PositiveSemidefinite,
-                  ComputeHashOfLowerTriangular(m)},
-      m_{m} {
-  if (!math::IsSymmetric(m)) {
-    ostringstream oss;
-    oss << "The following matrix is not symmetric and cannot be used to "
-           "construct dreal::drake::symbolic::FormulaPositiveSemidefinite:\n"
-        << m;
-    throw std::runtime_error(oss.str());
-  }
-}
-
-namespace {
-// Helper Eigen-visitor class that we use to implement
-// FormulaPositiveSemidefinite::GetFreeVariables().
-struct VariablesCollector {
-  using Index = Eigen::Index;
-
-  // Called for the first coefficient.
-  void init(const Expression& e, Index i, Index j) {
-    assert(vars_.empty());
-    return operator()(e, i, j);
-  }
-  // Called for all other coefficients.
-  void operator()(const Expression& e, Index /* i */, Index /* j */) {
-    vars_ += e.GetVariables();
-  }
-
-  Variables vars_;
-};
-}  // namespace
-
-Variables FormulaPositiveSemidefinite::GetFreeVariables() const {
-  VariablesCollector vc;
-  m_.visit(vc);
-  return vc.vars_;
-}
-
-bool FormulaPositiveSemidefinite::EqualTo(const FormulaCell& f) const {
-  // Formula::EqualTo guarantees the following assertion.
-  assert(get_kind() == f.get_kind());
-  const FormulaPositiveSemidefinite& f_psd{
-      static_cast<const FormulaPositiveSemidefinite&>(f)};
-  return CheckStructuralEquality(m_, f_psd.m_);
-}
-
-bool FormulaPositiveSemidefinite::Less(const FormulaCell& f) const {
-  // Formula::Less guarantees the following assertion.
-  assert(get_kind() == f.get_kind());
-  const FormulaPositiveSemidefinite& f_psd{
-      static_cast<const FormulaPositiveSemidefinite&>(f)};
-
-  // Compare rows.
-  if (m_.rows() < f_psd.m_.rows()) {
-    return true;
-  }
-  if (f_psd.m_.rows() < m_.rows()) {
-    return false;
-  }
-
-  // No need to compare cols since m_ and f_psd.m_ are square matrices.
-  assert(m_.rows() == f_psd.m_.rows() && m_.cols() == f_psd.m_.cols());
-
-  // Element-wise comparison.
-  const int num_of_elements = m_.rows() * m_.cols();
-  // clang-format off
-  return lexicographical_compare(
-      m_.data(), m_.data() + num_of_elements,
-      f_psd.m_.data(), f_psd.m_.data() + num_of_elements,
-      [](const Expression& e1, const Expression& e2) { return e1.Less(e2); });
-  // clang-format on
-}
-
-bool FormulaPositiveSemidefinite::Evaluate(const Environment&) const {
-  // Need to check if xᵀ m x ≥ * 0 for all vector x ∈ ℝⁿ.
-  // TODO(Soonho): implement this when we have SMT/delta-SMT support.
-  throw runtime_error(
-      "Checking positive_semidefinite(M) is not yet implemented.");
-}
-
-Formula FormulaPositiveSemidefinite::Substitute(
-    const ExpressionSubstitution& expr_subst,
-    const FormulaSubstitution& formula_subst) const {
-  return positive_semidefinite(
-      m_.unaryExpr([&expr_subst, &formula_subst](const Expression& e) {
-        return e.Substitute(expr_subst, formula_subst);
-      }));
-}
-
-ostream& FormulaPositiveSemidefinite::Display(ostream& os) const {
-  return os << "positive_semidefinite(" << m_ << ")";
-}
-
 bool is_false(const FormulaCell& f) {
   return f.get_kind() == FormulaKind::False;
 }
@@ -723,14 +594,6 @@ bool is_negation(const FormulaCell& f) {
 
 bool is_forall(const FormulaCell& f) {
   return f.get_kind() == FormulaKind::Forall;
-}
-
-bool is_isnan(const FormulaCell& f) {
-  return f.get_kind() == FormulaKind::Isnan;
-}
-
-bool is_positive_semidefinite(const FormulaCell& f) {
-  return f.get_kind() == FormulaKind::PositiveSemidefinite;
 }
 
 shared_ptr<FormulaFalse> to_false(const shared_ptr<FormulaCell>& f_ptr) {
@@ -865,24 +728,6 @@ shared_ptr<FormulaForall> to_forall(const shared_ptr<FormulaCell>& f_ptr) {
 
 shared_ptr<FormulaForall> to_forall(const Formula& f) {
   return to_forall(f.ptr_);
-}
-
-shared_ptr<FormulaIsnan> to_isnan(const shared_ptr<FormulaCell>& f_ptr) {
-  assert(is_isnan(*f_ptr));
-  return static_pointer_cast<FormulaIsnan>(f_ptr);
-}
-
-shared_ptr<FormulaIsnan> to_isnan(const Formula& f) { return to_isnan(f.ptr_); }
-
-shared_ptr<FormulaPositiveSemidefinite> to_positive_semidefinite(
-    const shared_ptr<FormulaCell>& f_ptr) {
-  assert(is_positive_semidefinite(*f_ptr));
-  return static_pointer_cast<FormulaPositiveSemidefinite>(f_ptr);
-}
-
-shared_ptr<FormulaPositiveSemidefinite> to_positive_semidefinite(
-    const Formula& f) {
-  return to_positive_semidefinite(f.ptr_);
 }
 
 }  // namespace symbolic
