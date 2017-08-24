@@ -18,6 +18,7 @@
 #include "symbolic/symbolic_variable.h"
 #include "symbolic/symbolic_variables.h"
 
+namespace dreal {
 namespace drake {
 namespace symbolic {
 
@@ -853,3 +854,4 @@ MatrixX<Expression> Jacobian(const Eigen::Ref<const VectorX<Expression>>& f,
 }
 }  // namespace symbolic
 }  // namespace drake
+}  // namespace dreal

@@ -24,6 +24,7 @@ using std::set;
 using std::set_intersection;
 using std::string;
 
+namespace dreal {
 namespace drake {
 namespace symbolic {
 
@@ -156,3 +157,4 @@ ostream& operator<<(ostream& os, const Variables& vars) {
 
 }  // namespace symbolic
 }  // namespace drake
+}  // namespace dreal

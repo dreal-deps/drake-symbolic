@@ -8,6 +8,7 @@
 #include "symbolic/symbolic_variable.h"
 #include "symbolic/symbolic_variables.h"
 
+namespace dreal {
 namespace drake {
 namespace symbolic {
 /** Represents a symbolic environment (mapping from a variable to a value).
@@ -119,3 +120,4 @@ class Environment {
 };
 }  // namespace symbolic
 }  // namespace drake
+}  // namespace dreal

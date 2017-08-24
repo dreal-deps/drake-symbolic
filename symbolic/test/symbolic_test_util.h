@@ -7,6 +7,7 @@
 #include "symbolic/symbolic_formula.h"
 #include "symbolic/symbolic_variable.h"
 
+namespace dreal {
 namespace drake {
 namespace symbolic {
 namespace test {
@@ -72,3 +73,4 @@ inline bool FormulaNotLess(const Formula& f1, const Formula& f2) {
 }  // namespace test
 }  // namespace symbolic
 }  // namespace drake
+}  // namespace dreal

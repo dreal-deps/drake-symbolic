@@ -14,6 +14,7 @@
 #include "symbolic/symbolic_variable.h"
 #include "symbolic/symbolic_variables.h"
 
+namespace dreal {
 namespace drake {
 namespace math {
 /// Determines if a matrix is symmetric. If std::equal_to<>()(matrix(i, j),
@@ -577,7 +578,7 @@ FormulaPositiveSemidefinite::FormulaPositiveSemidefinite(
   if (!math::IsSymmetric(m)) {
     ostringstream oss;
     oss << "The following matrix is not symmetric and cannot be used to "
-           "construct drake::symbolic::FormulaPositiveSemidefinite:\n"
+           "construct dreal::drake::symbolic::FormulaPositiveSemidefinite:\n"
         << m;
     throw std::runtime_error(oss.str());
   }
@@ -886,3 +887,4 @@ shared_ptr<FormulaPositiveSemidefinite> to_positive_semidefinite(
 
 }  // namespace symbolic
 }  // namespace drake
+}  // namespace dreal

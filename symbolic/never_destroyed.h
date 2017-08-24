@@ -4,6 +4,7 @@
 #include <type_traits>
 #include <utility>
 
+namespace dreal {
 namespace drake {
 
 /// Wraps an underlying type T such that its storage is a direct member field
@@ -46,3 +47,4 @@ class never_destroyed {
 };
 
 }  // namespace drake
+}  // namespace dreal

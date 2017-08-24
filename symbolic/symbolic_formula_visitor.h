@@ -4,6 +4,7 @@
 
 #include "symbolic/symbolic_formula.h"
 
+namespace dreal {
 namespace drake {
 namespace symbolic {
 
@@ -58,3 +59,4 @@ Result VisitFormula(Visitor* v, const Formula& f, Args&&... args) {
 
 }  // namespace symbolic
 }  // namespace drake
+}  // namespace dreal

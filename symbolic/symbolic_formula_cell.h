@@ -14,6 +14,7 @@
 #include "symbolic/symbolic_variable.h"
 #include "symbolic/symbolic_variables.h"
 
+namespace dreal {
 namespace drake {
 namespace symbolic {
 
@@ -656,3 +657,4 @@ std::shared_ptr<FormulaPositiveSemidefinite> to_positive_semidefinite(
 
 }  // namespace symbolic
 }  // namespace drake
+}  // namespace dreal

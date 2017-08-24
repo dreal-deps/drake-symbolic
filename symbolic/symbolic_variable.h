@@ -10,6 +10,7 @@
 
 #include "symbolic/hash.h"
 
+namespace dreal {
 namespace drake {
 namespace symbolic {
 
@@ -91,22 +92,23 @@ struct hash_value<symbolic::Variable> {
 };
 
 }  // namespace drake
+}  // namespace dreal
 
 namespace std {
-/* Provides std::less<drake::symbolic::Variable>. */
+/* Provides std::less<dreal::drake::symbolic::Variable>. */
 template <>
-struct less<drake::symbolic::Variable> {
-  bool operator()(const drake::symbolic::Variable& lhs,
-                  const drake::symbolic::Variable& rhs) const {
+struct less<dreal::drake::symbolic::Variable> {
+  bool operator()(const dreal::drake::symbolic::Variable& lhs,
+                  const dreal::drake::symbolic::Variable& rhs) const {
     return lhs.less(rhs);
   }
 };
 
-/* Provides std::equal_to<drake::symbolic::Variable>. */
+/* Provides std::equal_to<dreal::drake::symbolic::Variable>. */
 template <>
-struct equal_to<drake::symbolic::Variable> {
-  bool operator()(const drake::symbolic::Variable& lhs,
-                  const drake::symbolic::Variable& rhs) const {
+struct equal_to<dreal::drake::symbolic::Variable> {
+  bool operator()(const dreal::drake::symbolic::Variable& lhs,
+                  const dreal::drake::symbolic::Variable& rhs) const {
     return lhs.equal_to(rhs);
   }
 };
@@ -114,15 +116,16 @@ struct equal_to<drake::symbolic::Variable> {
 
 #if !defined(DRAKE_DOXYGEN_CXX)
 namespace Eigen {
-// Eigen scalar type traits for Matrix<drake::symbolic::Variable>.
+// Eigen scalar type traits for Matrix<dreal::drake::symbolic::Variable>.
 template <>
-struct NumTraits<drake::symbolic::Variable>
-    : GenericNumTraits<drake::symbolic::Variable> {
+struct NumTraits<dreal::drake::symbolic::Variable>
+    : GenericNumTraits<dreal::drake::symbolic::Variable> {
   static inline int digits10() { return 0; }
 };
 }  // namespace Eigen
 #endif  // !defined(DRAKE_DOXYGEN_CXX)
 
+namespace dreal {
 namespace drake {
 namespace symbolic {
 /// Checks if two Eigen::Matrix<Variable> @p m1 and @p m2 are structurally
@@ -142,3 +145,4 @@ CheckStructuralEquality(const DerivedA& m1, const DerivedB& m2) {
 }
 }  // namespace symbolic
 }  // namespace drake
+}  // namespace dreal

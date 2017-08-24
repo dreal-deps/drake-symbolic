@@ -15,6 +15,7 @@
 #include "symbolic/symbolic_variable.h"
 #include "symbolic/symbolic_variables.h"
 
+namespace dreal {
 namespace drake {
 namespace symbolic {
 
@@ -1132,3 +1133,4 @@ std::shared_ptr<ExpressionUninterpretedFunction> to_uninterpreted_function(
 
 }  // namespace symbolic
 }  // namespace drake
+}  // namespace dreal

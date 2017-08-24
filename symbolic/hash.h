@@ -8,6 +8,7 @@
 #include <utility>
 #include <vector>
 
+namespace dreal {
 namespace drake {
 
 /** Combines a given hash value @p seed and a hash of parameter @p v. */
@@ -75,3 +76,4 @@ inline size_t hash_combine(size_t seed, const T& v) {
   return seed;
 }
 }  // namespace drake
+}  // namespace dreal

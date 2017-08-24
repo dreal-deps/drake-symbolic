@@ -7,6 +7,7 @@
 #include <stdexcept>
 #include <string>
 
+namespace dreal {
 namespace drake {
 namespace symbolic {
 
@@ -87,3 +88,4 @@ ostream& operator<<(ostream& os, const Environment& env) {
 }
 }  // namespace symbolic
 }  // namespace drake
+}  // namespace dreal

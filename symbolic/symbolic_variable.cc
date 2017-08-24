@@ -16,6 +16,7 @@ using std::ostream;
 using std::ostringstream;
 using std::string;
 
+namespace dreal {
 namespace drake {
 namespace symbolic {
 
@@ -61,3 +62,4 @@ ostream& operator<<(ostream& os, Variable::Type type) {
 }
 }  // namespace symbolic
 }  // namespace drake
+}  // namespace dreal

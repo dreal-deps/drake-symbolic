@@ -12,6 +12,7 @@
 #include "symbolic/symbolic_variable.h"
 #include "symbolic/symbolic_variables.h"
 
+namespace dreal {
 namespace drake {
 namespace symbolic {
 
@@ -394,3 +395,4 @@ const MatrixX<Expression>& get_matrix_in_positive_semidefinite(
 }
 }  // namespace symbolic
 }  // namespace drake
+}  // namespace dreal

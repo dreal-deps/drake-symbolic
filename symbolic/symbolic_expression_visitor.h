@@ -5,6 +5,7 @@
 
 #include "symbolic/symbolic_expression.h"
 
+namespace dreal {
 namespace drake {
 namespace symbolic {
 
@@ -165,3 +166,4 @@ Result VisitExpression(Visitor* v, const Expression& e, Args&&... args) {
 
 }  // namespace symbolic
 }  // namespace drake
+}  // namespace dreal

@@ -10,6 +10,7 @@
 #include "symbolic/eigen_types.h"
 #include "symbolic/symbolic_variable.h"
 
+namespace dreal {
 namespace drake {
 namespace symbolic {
 
@@ -172,3 +173,4 @@ struct hash_value<symbolic::Variables> {
 };
 
 }  // namespace drake
+}  // namespace dreal

@@ -16,6 +16,7 @@
 #include "symbolic/symbolic_variable.h"
 #include "symbolic/symbolic_variables.h"
 
+namespace dreal {
 namespace drake {
 namespace symbolic {
 
@@ -1079,34 +1080,35 @@ struct hash_value<symbolic::Formula> {
   size_t operator()(const symbolic::Formula& f) const { return f.get_hash(); }
 };
 }  // namespace drake
+}  // namespace dreal
 
 namespace std {
-/* Provides std::less<drake::symbolic::Formula>. */
+/* Provides std::less<dreal::drake::symbolic::Formula>. */
 template <>
-struct less<drake::symbolic::Formula> {
-  bool operator()(const drake::symbolic::Formula& lhs,
-                  const drake::symbolic::Formula& rhs) const {
+struct less<dreal::drake::symbolic::Formula> {
+  bool operator()(const dreal::drake::symbolic::Formula& lhs,
+                  const dreal::drake::symbolic::Formula& rhs) const {
     return lhs.Less(rhs);
   }
 };
 
-/* Provides std::equal_to<drake::symbolic::Formula>. */
+/* Provides std::equal_to<dreal::drake::symbolic::Formula>. */
 template <>
-struct equal_to<drake::symbolic::Formula> {
-  bool operator()(const drake::symbolic::Formula& lhs,
-                  const drake::symbolic::Formula& rhs) const {
+struct equal_to<dreal::drake::symbolic::Formula> {
+  bool operator()(const dreal::drake::symbolic::Formula& lhs,
+                  const dreal::drake::symbolic::Formula& rhs) const {
     return lhs.EqualTo(rhs);
   }
 };
 }  // namespace std
 
 #if !defined(DRAKE_DOXYGEN_CXX)
-// Define Eigen traits needed for Matrix<drake::symbolic::Formula>.
+// Define Eigen traits needed for Matrix<dreal::drake::symbolic::Formula>.
 namespace Eigen {
-// Eigen scalar type traits for Matrix<drake::symbolic::Formula>.
+// Eigen scalar type traits for Matrix<dreal::drake::symbolic::Formula>.
 template <>
-struct NumTraits<drake::symbolic::Formula>
-    : GenericNumTraits<drake::symbolic::Formula> {
+struct NumTraits<dreal::drake::symbolic::Formula>
+    : GenericNumTraits<dreal::drake::symbolic::Formula> {
   static inline int digits10() { return 0; }
 };
 
@@ -1114,168 +1116,180 @@ namespace internal {
 
 /// Provides specialization for scalar_cmp_op to handle the case "Expr == Expr"
 template <>
-struct scalar_cmp_op<drake::symbolic::Expression, drake::symbolic::Expression,
-                     cmp_EQ>
-    : binary_op_base<drake::symbolic::Expression, drake::symbolic::Expression> {
-  typedef drake::symbolic::Formula result_type;
+struct scalar_cmp_op<dreal::drake::symbolic::Expression,
+                     dreal::drake::symbolic::Expression, cmp_EQ>
+    : binary_op_base<dreal::drake::symbolic::Expression,
+                     dreal::drake::symbolic::Expression> {
+  typedef dreal::drake::symbolic::Formula result_type;
   EIGEN_EMPTY_STRUCT_CTOR(scalar_cmp_op)
   EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE result_type
-  operator()(const drake::symbolic::Expression& a,
-             const drake::symbolic::Expression& b) const {
+  operator()(const dreal::drake::symbolic::Expression& a,
+             const dreal::drake::symbolic::Expression& b) const {
     return a == b;
   }
 };
 
 /// Provides specialization for scalar_cmp_op to handle the case "Expr < Expr".
 template <>
-struct scalar_cmp_op<drake::symbolic::Expression, drake::symbolic::Expression,
-                     cmp_LT>
-    : binary_op_base<drake::symbolic::Expression, drake::symbolic::Expression> {
-  typedef drake::symbolic::Formula result_type;
+struct scalar_cmp_op<dreal::drake::symbolic::Expression,
+                     dreal::drake::symbolic::Expression, cmp_LT>
+    : binary_op_base<dreal::drake::symbolic::Expression,
+                     dreal::drake::symbolic::Expression> {
+  typedef dreal::drake::symbolic::Formula result_type;
   EIGEN_EMPTY_STRUCT_CTOR(scalar_cmp_op)
   EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE result_type
-  operator()(const drake::symbolic::Expression& a,
-             const drake::symbolic::Expression& b) const {
+  operator()(const dreal::drake::symbolic::Expression& a,
+             const dreal::drake::symbolic::Expression& b) const {
     return a < b;
   }
 };
 
 /// Provides specialization for scalar_cmp_op to handle the case "Expr <= Expr".
 template <>
-struct scalar_cmp_op<drake::symbolic::Expression, drake::symbolic::Expression,
-                     cmp_LE>
-    : binary_op_base<drake::symbolic::Expression, drake::symbolic::Expression> {
-  typedef drake::symbolic::Formula result_type;
+struct scalar_cmp_op<dreal::drake::symbolic::Expression,
+                     dreal::drake::symbolic::Expression, cmp_LE>
+    : binary_op_base<dreal::drake::symbolic::Expression,
+                     dreal::drake::symbolic::Expression> {
+  typedef dreal::drake::symbolic::Formula result_type;
   EIGEN_EMPTY_STRUCT_CTOR(scalar_cmp_op)
   EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE result_type
-  operator()(const drake::symbolic::Expression& a,
-             const drake::symbolic::Expression& b) const {
+  operator()(const dreal::drake::symbolic::Expression& a,
+             const dreal::drake::symbolic::Expression& b) const {
     return a <= b;
   }
 };
 
 /// Provides specialization for scalar_cmp_op to handle the case "Expr > Expr".
 template <>
-struct scalar_cmp_op<drake::symbolic::Expression, drake::symbolic::Expression,
-                     cmp_GT>
-    : binary_op_base<drake::symbolic::Expression, drake::symbolic::Expression> {
-  typedef drake::symbolic::Formula result_type;
+struct scalar_cmp_op<dreal::drake::symbolic::Expression,
+                     dreal::drake::symbolic::Expression, cmp_GT>
+    : binary_op_base<dreal::drake::symbolic::Expression,
+                     dreal::drake::symbolic::Expression> {
+  typedef dreal::drake::symbolic::Formula result_type;
   EIGEN_EMPTY_STRUCT_CTOR(scalar_cmp_op)
   EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE result_type
-  operator()(const drake::symbolic::Expression& a,
-             const drake::symbolic::Expression& b) const {
+  operator()(const dreal::drake::symbolic::Expression& a,
+             const dreal::drake::symbolic::Expression& b) const {
     return a > b;
   }
 };
 
 /// Provides specialization for scalar_cmp_op to handle the case "Expr >= Expr".
 template <>
-struct scalar_cmp_op<drake::symbolic::Expression, drake::symbolic::Expression,
-                     cmp_GE>
-    : binary_op_base<drake::symbolic::Expression, drake::symbolic::Expression> {
-  typedef drake::symbolic::Formula result_type;
+struct scalar_cmp_op<dreal::drake::symbolic::Expression,
+                     dreal::drake::symbolic::Expression, cmp_GE>
+    : binary_op_base<dreal::drake::symbolic::Expression,
+                     dreal::drake::symbolic::Expression> {
+  typedef dreal::drake::symbolic::Formula result_type;
   EIGEN_EMPTY_STRUCT_CTOR(scalar_cmp_op)
   EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE result_type
-  operator()(const drake::symbolic::Expression& a,
-             const drake::symbolic::Expression& b) const {
+  operator()(const dreal::drake::symbolic::Expression& a,
+             const dreal::drake::symbolic::Expression& b) const {
     return a >= b;
   }
 };
 
 /// Provides specialization for scalar_cmp_op to handle the case "Expr != Expr".
 template <>
-struct scalar_cmp_op<drake::symbolic::Expression, drake::symbolic::Expression,
-                     cmp_NEQ>
-    : binary_op_base<drake::symbolic::Expression, drake::symbolic::Expression> {
-  typedef drake::symbolic::Formula result_type;
+struct scalar_cmp_op<dreal::drake::symbolic::Expression,
+                     dreal::drake::symbolic::Expression, cmp_NEQ>
+    : binary_op_base<dreal::drake::symbolic::Expression,
+                     dreal::drake::symbolic::Expression> {
+  typedef dreal::drake::symbolic::Formula result_type;
   EIGEN_EMPTY_STRUCT_CTOR(scalar_cmp_op)
   EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE result_type
-  operator()(const drake::symbolic::Expression& a,
-             const drake::symbolic::Expression& b) const {
+  operator()(const dreal::drake::symbolic::Expression& a,
+             const dreal::drake::symbolic::Expression& b) const {
     return a != b;
   }
 };
 
 /// Provides specialization for scalar_cmp_op to handle the case "Var == Var".
 template <>
-struct scalar_cmp_op<drake::symbolic::Variable, drake::symbolic::Variable,
-                     cmp_EQ>
-    : binary_op_base<drake::symbolic::Variable, drake::symbolic::Variable> {
-  typedef drake::symbolic::Formula result_type;
+struct scalar_cmp_op<dreal::drake::symbolic::Variable,
+                     dreal::drake::symbolic::Variable, cmp_EQ>
+    : binary_op_base<dreal::drake::symbolic::Variable,
+                     dreal::drake::symbolic::Variable> {
+  typedef dreal::drake::symbolic::Formula result_type;
   EIGEN_EMPTY_STRUCT_CTOR(scalar_cmp_op)
   EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE result_type
-  operator()(const drake::symbolic::Variable& a,
-             const drake::symbolic::Variable& b) const {
+  operator()(const dreal::drake::symbolic::Variable& a,
+             const dreal::drake::symbolic::Variable& b) const {
     return a == b;
   }
 };
 
 /// Provides specialization for scalar_cmp_op to handle the case "Var < Var".
 template <>
-struct scalar_cmp_op<drake::symbolic::Variable, drake::symbolic::Variable,
-                     cmp_LT>
-    : binary_op_base<drake::symbolic::Variable, drake::symbolic::Variable> {
-  typedef drake::symbolic::Formula result_type;
+struct scalar_cmp_op<dreal::drake::symbolic::Variable,
+                     dreal::drake::symbolic::Variable, cmp_LT>
+    : binary_op_base<dreal::drake::symbolic::Variable,
+                     dreal::drake::symbolic::Variable> {
+  typedef dreal::drake::symbolic::Formula result_type;
   EIGEN_EMPTY_STRUCT_CTOR(scalar_cmp_op)
   EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE result_type
-  operator()(const drake::symbolic::Variable& a,
-             const drake::symbolic::Variable& b) const {
+  operator()(const dreal::drake::symbolic::Variable& a,
+             const dreal::drake::symbolic::Variable& b) const {
     return a < b;
   }
 };
 
 /// Provides specialization for scalar_cmp_op to handle the case "Var <= Var".
 template <>
-struct scalar_cmp_op<drake::symbolic::Variable, drake::symbolic::Variable,
-                     cmp_LE>
-    : binary_op_base<drake::symbolic::Variable, drake::symbolic::Variable> {
-  typedef drake::symbolic::Formula result_type;
+struct scalar_cmp_op<dreal::drake::symbolic::Variable,
+                     dreal::drake::symbolic::Variable, cmp_LE>
+    : binary_op_base<dreal::drake::symbolic::Variable,
+                     dreal::drake::symbolic::Variable> {
+  typedef dreal::drake::symbolic::Formula result_type;
   EIGEN_EMPTY_STRUCT_CTOR(scalar_cmp_op)
   EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE result_type
-  operator()(const drake::symbolic::Variable& a,
-             const drake::symbolic::Variable& b) const {
+  operator()(const dreal::drake::symbolic::Variable& a,
+             const dreal::drake::symbolic::Variable& b) const {
     return a <= b;
   }
 };
 
 /// Provides specialization for scalar_cmp_op to handle the case "Var > Var".
 template <>
-struct scalar_cmp_op<drake::symbolic::Variable, drake::symbolic::Variable,
-                     cmp_GT>
-    : binary_op_base<drake::symbolic::Variable, drake::symbolic::Variable> {
-  typedef drake::symbolic::Formula result_type;
+struct scalar_cmp_op<dreal::drake::symbolic::Variable,
+                     dreal::drake::symbolic::Variable, cmp_GT>
+    : binary_op_base<dreal::drake::symbolic::Variable,
+                     dreal::drake::symbolic::Variable> {
+  typedef dreal::drake::symbolic::Formula result_type;
   EIGEN_EMPTY_STRUCT_CTOR(scalar_cmp_op)
   EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE result_type
-  operator()(const drake::symbolic::Variable& a,
-             const drake::symbolic::Variable& b) const {
+  operator()(const dreal::drake::symbolic::Variable& a,
+             const dreal::drake::symbolic::Variable& b) const {
     return a > b;
   }
 };
 
 /// Provides specialization for scalar_cmp_op to handle the case "Var >= Var".
 template <>
-struct scalar_cmp_op<drake::symbolic::Variable, drake::symbolic::Variable,
-                     cmp_GE>
-    : binary_op_base<drake::symbolic::Variable, drake::symbolic::Variable> {
-  typedef drake::symbolic::Formula result_type;
+struct scalar_cmp_op<dreal::drake::symbolic::Variable,
+                     dreal::drake::symbolic::Variable, cmp_GE>
+    : binary_op_base<dreal::drake::symbolic::Variable,
+                     dreal::drake::symbolic::Variable> {
+  typedef dreal::drake::symbolic::Formula result_type;
   EIGEN_EMPTY_STRUCT_CTOR(scalar_cmp_op)
   EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE result_type
-  operator()(const drake::symbolic::Variable& a,
-             const drake::symbolic::Variable& b) const {
+  operator()(const dreal::drake::symbolic::Variable& a,
+             const dreal::drake::symbolic::Variable& b) const {
     return a >= b;
   }
 };
 
 /// Provides specialization for scalar_cmp_op to handle the case "Var != Var".
 template <>
-struct scalar_cmp_op<drake::symbolic::Variable, drake::symbolic::Variable,
-                     cmp_NEQ>
-    : binary_op_base<drake::symbolic::Variable, drake::symbolic::Variable> {
-  typedef drake::symbolic::Formula result_type;
+struct scalar_cmp_op<dreal::drake::symbolic::Variable,
+                     dreal::drake::symbolic::Variable, cmp_NEQ>
+    : binary_op_base<dreal::drake::symbolic::Variable,
+                     dreal::drake::symbolic::Variable> {
+  typedef dreal::drake::symbolic::Formula result_type;
   EIGEN_EMPTY_STRUCT_CTOR(scalar_cmp_op)
   EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE result_type
-  operator()(const drake::symbolic::Variable& a,
-             const drake::symbolic::Variable& b) const {
+  operator()(const dreal::drake::symbolic::Variable& a,
+             const dreal::drake::symbolic::Variable& b) const {
     return a != b;
   }
 };

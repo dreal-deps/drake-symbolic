@@ -11,6 +11,7 @@
 
 #include <Eigen/Dense>
 
+namespace dreal {
 namespace drake {
 
 constexpr int kQuaternionSize = 4;
@@ -180,3 +181,4 @@ struct MultiplyEigenSizes {
       (a == Eigen::Dynamic || b == Eigen::Dynamic) ? Eigen::Dynamic : a * b;
 };
 }  // namespace drake
+}  // namespace dreal

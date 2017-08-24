@@ -21,6 +21,7 @@
 #include "symbolic/symbolic_variable.h"
 #include "symbolic/symbolic_variables.h"
 
+namespace dreal {
 namespace drake {
 namespace symbolic {
 
@@ -1053,7 +1054,7 @@ class DivExpandVisitor {
 
   // Makes VisitExpression a friend of this class so that VisitExpression can
   // use its private methods.
-  friend Expression drake::symbolic::VisitExpression<Expression>(
+  friend Expression dreal::drake::symbolic::VisitExpression<Expression>(
       const DivExpandVisitor*, const Expression&, const double&);
 };
 }  // namespace
@@ -2068,3 +2069,4 @@ shared_ptr<ExpressionUninterpretedFunction> to_uninterpreted_function(
 
 }  // namespace symbolic
 }  // namespace drake
+}  // namespace dreal

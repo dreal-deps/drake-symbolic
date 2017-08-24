@@ -20,6 +20,7 @@
 #include "symbolic/symbolic_variable.h"
 #include "symbolic/symbolic_variables.h"
 
+namespace dreal {
 namespace drake {
 
 namespace symbolic {
@@ -219,7 +220,7 @@ class Expression {
 
   /** Provides lexicographical ordering between expressions.
       This function is used as a compare function in map<Expression> and
-      set<Expression> via std::less<drake::symbolic::Expression>. */
+      set<Expression> via std::less<dreal::drake::symbolic::Expression>. */
   bool Less(const Expression& e) const;
 
   /** Checks if this symbolic expression is convertible to Polynomial. */
@@ -751,22 +752,23 @@ struct hash_value<symbolic::Expression> {
 };
 
 }  // namespace drake
+}  // namespace dreal
 
 namespace std {
-/* Provides std::less<drake::symbolic::Expression>. */
+/* Provides std::less<dreal::drake::symbolic::Expression>. */
 template <>
-struct less<drake::symbolic::Expression> {
-  bool operator()(const drake::symbolic::Expression& lhs,
-                  const drake::symbolic::Expression& rhs) const {
+struct less<dreal::drake::symbolic::Expression> {
+  bool operator()(const dreal::drake::symbolic::Expression& lhs,
+                  const dreal::drake::symbolic::Expression& rhs) const {
     return lhs.Less(rhs);
   }
 };
 
-/* Provides std::equal_to<drake::symbolic::Expression>. */
+/* Provides std::equal_to<dreal::drake::symbolic::Expression>. */
 template <>
-struct equal_to<drake::symbolic::Expression> {
-  bool operator()(const drake::symbolic::Expression& lhs,
-                  const drake::symbolic::Expression& rhs) const {
+struct equal_to<dreal::drake::symbolic::Expression> {
+  bool operator()(const dreal::drake::symbolic::Expression& lhs,
+                  const dreal::drake::symbolic::Expression& rhs) const {
     return lhs.EqualTo(rhs);
   }
 };
@@ -774,70 +776,75 @@ struct equal_to<drake::symbolic::Expression> {
 }  // namespace std
 
 #if !defined(DRAKE_DOXYGEN_CXX)
-// Define Eigen traits needed for Matrix<drake::symbolic::Expression>.
+// Define Eigen traits needed for Matrix<dreal::drake::symbolic::Expression>.
 namespace Eigen {
-// Eigen scalar type traits for Matrix<drake::symbolic::Expression>.
+// Eigen scalar type traits for Matrix<dreal::drake::symbolic::Expression>.
 template <>
-struct NumTraits<drake::symbolic::Expression>
-    : GenericNumTraits<drake::symbolic::Expression> {
+struct NumTraits<dreal::drake::symbolic::Expression>
+    : GenericNumTraits<dreal::drake::symbolic::Expression> {
   static inline int digits10() { return 0; }
 };
 
 // Informs Eigen that Variable op Variable gets Expression.
 template <typename BinaryOp>
-struct ScalarBinaryOpTraits<drake::symbolic::Variable,
-                            drake::symbolic::Variable, BinaryOp> {
+struct ScalarBinaryOpTraits<dreal::drake::symbolic::Variable,
+                            dreal::drake::symbolic::Variable, BinaryOp> {
   enum { Defined = 1 };
-  typedef drake::symbolic::Expression ReturnType;
+  typedef dreal::drake::symbolic::Expression ReturnType;
 };
 
 // Informs Eigen that Variable op Expression gets Expression.
 template <typename BinaryOp>
-struct ScalarBinaryOpTraits<drake::symbolic::Variable,
-                            drake::symbolic::Expression, BinaryOp> {
+struct ScalarBinaryOpTraits<dreal::drake::symbolic::Variable,
+                            dreal::drake::symbolic::Expression, BinaryOp> {
   enum { Defined = 1 };
-  typedef drake::symbolic::Expression ReturnType;
+  typedef dreal::drake::symbolic::Expression ReturnType;
 };
 
 // Informs Eigen that Expression op Variable gets Expression.
 template <typename BinaryOp>
-struct ScalarBinaryOpTraits<drake::symbolic::Expression,
-                            drake::symbolic::Variable, BinaryOp> {
+struct ScalarBinaryOpTraits<dreal::drake::symbolic::Expression,
+                            dreal::drake::symbolic::Variable, BinaryOp> {
   enum { Defined = 1 };
-  typedef drake::symbolic::Expression ReturnType;
+  typedef dreal::drake::symbolic::Expression ReturnType;
 };
 
 // Informs Eigen that Variable op double gets Expression.
 template <typename BinaryOp>
-struct ScalarBinaryOpTraits<drake::symbolic::Variable, double, BinaryOp> {
+struct ScalarBinaryOpTraits<dreal::drake::symbolic::Variable, double,
+                            BinaryOp> {
   enum { Defined = 1 };
-  typedef drake::symbolic::Expression ReturnType;
+  typedef dreal::drake::symbolic::Expression ReturnType;
 };
 
 // Informs Eigen that double op Variable gets Expression.
 template <typename BinaryOp>
-struct ScalarBinaryOpTraits<double, drake::symbolic::Variable, BinaryOp> {
+struct ScalarBinaryOpTraits<double, dreal::drake::symbolic::Variable,
+                            BinaryOp> {
   enum { Defined = 1 };
-  typedef drake::symbolic::Expression ReturnType;
+  typedef dreal::drake::symbolic::Expression ReturnType;
 };
 
 // Informs Eigen that Expression op double gets Expression.
 template <typename BinaryOp>
-struct ScalarBinaryOpTraits<drake::symbolic::Expression, double, BinaryOp> {
+struct ScalarBinaryOpTraits<dreal::drake::symbolic::Expression, double,
+                            BinaryOp> {
   enum { Defined = 1 };
-  typedef drake::symbolic::Expression ReturnType;
+  typedef dreal::drake::symbolic::Expression ReturnType;
 };
 
 // Informs Eigen that double op Expression gets Expression.
 template <typename BinaryOp>
-struct ScalarBinaryOpTraits<double, drake::symbolic::Expression, BinaryOp> {
+struct ScalarBinaryOpTraits<double, dreal::drake::symbolic::Expression,
+                            BinaryOp> {
   enum { Defined = 1 };
-  typedef drake::symbolic::Expression ReturnType;
+  typedef dreal::drake::symbolic::Expression ReturnType;
 };
 
 }  // namespace Eigen
 #endif  // !defined(DRAKE_DOXYGEN_CXX)
 
+namespace dreal {
 namespace drake {
 namespace symbolic {
 /// Computes the Jacobian matrix J of the vector function @p f with respect to
@@ -882,3 +889,4 @@ CheckStructuralEquality(const DerivedA& m1, const DerivedB& m2) {
 
 }  // namespace symbolic
 }  // namespace drake
+}  // namespace dreal
