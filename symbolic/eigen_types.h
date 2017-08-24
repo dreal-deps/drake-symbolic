@@ -11,9 +11,21 @@
 
 #include <Eigen/Dense>
 
-#include "drake/common/constants.h"
-
 namespace drake {
+
+constexpr int kQuaternionSize = 4;
+
+constexpr int kSpaceDimension = 3;
+
+constexpr int kRpySize = 3;
+
+/// https://en.wikipedia.org/wiki/Screw_theory#Twist
+constexpr int kTwistSize = 6;
+
+/// http://www.euclideanspace.com/maths/geometry/affine/matrix4x4/
+constexpr int kHomogeneousTransformSize = 16;
+
+const int kRotmatSize = kSpaceDimension * kSpaceDimension;
 
 /// A column vector of size 1 (that is, a scalar), templated on scalar type.
 template <typename Scalar>
@@ -83,7 +95,7 @@ using MatrixX = Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>;
 /// columns, are allowed.
 template <typename Scalar>
 using MatrixUpTo6 =
-Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic, 0, 6, 6>;
+    Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic, 0, 6, 6>;
 
 /// A quaternion templated on scalar type.
 template <typename Scalar>

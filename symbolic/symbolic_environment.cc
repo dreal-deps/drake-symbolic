@@ -1,4 +1,4 @@
-#include "drake/common/symbolic_environment.h"
+#include "symbolic/symbolic_environment.h"
 
 #include <cmath>
 #include <initializer_list>
@@ -11,11 +11,11 @@ namespace drake {
 namespace symbolic {
 
 using std::endl;
+using std::initializer_list;
 using std::ostream;
 using std::ostringstream;
 using std::runtime_error;
 using std::string;
-using std::initializer_list;
 
 namespace {
 void throw_if_dummy(const Variable& var) {

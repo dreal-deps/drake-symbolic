@@ -9,12 +9,11 @@
 
 #include <Eigen/Core>
 
-#include "drake/common/drake_copyable.h"
-#include "drake/common/symbolic_environment.h"
-#include "drake/common/symbolic_expression.h"
-#include "drake/common/symbolic_formula.h"
-#include "drake/common/symbolic_variable.h"
-#include "drake/common/symbolic_variables.h"
+#include "symbolic/symbolic_environment.h"
+#include "symbolic/symbolic_expression.h"
+#include "symbolic/symbolic_formula.h"
+#include "symbolic/symbolic_variable.h"
+#include "symbolic/symbolic_variables.h"
 
 namespace drake {
 namespace symbolic {
@@ -269,7 +268,10 @@ class ExpressionAdd : public ExpressionCell {
 /** Factory class to help build ExpressionAdd expressions. */
 class ExpressionAddFactory {
  public:
-  DRAKE_DEFAULT_COPY_AND_MOVE_AND_ASSIGN(ExpressionAddFactory)
+  ExpressionAddFactory(const ExpressionAddFactory&) = default;
+  ExpressionAddFactory& operator=(const ExpressionAddFactory&) = default;
+  ExpressionAddFactory(ExpressionAddFactory&&) = default;
+  ExpressionAddFactory& operator=(ExpressionAddFactory&&) = default;
 
   /** Default constructor. */
   ExpressionAddFactory() = default;
@@ -372,7 +374,10 @@ class ExpressionMul : public ExpressionCell {
 /** Factory class to help build ExpressionMul expressions. */
 class ExpressionMulFactory {
  public:
-  DRAKE_DEFAULT_COPY_AND_MOVE_AND_ASSIGN(ExpressionMulFactory)
+  ExpressionMulFactory(const ExpressionMulFactory&) = default;
+  ExpressionMulFactory& operator=(const ExpressionMulFactory&) = default;
+  ExpressionMulFactory(ExpressionMulFactory&&) = default;
+  ExpressionMulFactory& operator=(ExpressionMulFactory&&) = default;
 
   /** Default constructor. It constructs. */
   ExpressionMulFactory() = default;

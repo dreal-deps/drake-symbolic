@@ -7,8 +7,8 @@
 #include <set>
 #include <string>
 
-#include "drake/common/eigen_types.h"
-#include "drake/common/symbolic_variable.h"
+#include "symbolic/eigen_types.h"
+#include "symbolic/symbolic_variable.h"
 
 namespace drake {
 namespace symbolic {
@@ -24,7 +24,10 @@ namespace symbolic {
 
 class Variables {
  public:
-  DRAKE_DEFAULT_COPY_AND_MOVE_AND_ASSIGN(Variables)
+  Variables(const Variables&) = default;
+  Variables& operator=(const Variables&) = default;
+  Variables(Variables&&) = default;
+  Variables& operator=(Variables&&) = default;
 
   typedef typename std::set<Variable>::size_type size_type;
   typedef typename std::set<Variable>::iterator iterator;

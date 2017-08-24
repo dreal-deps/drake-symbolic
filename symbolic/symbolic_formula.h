@@ -9,14 +9,12 @@
 
 #include <Eigen/Core>
 
-#include "drake/common/drake_assert.h"
-#include "drake/common/drake_copyable.h"
-#include "drake/common/eigen_types.h"
-#include "drake/common/hash.h"
-#include "drake/common/symbolic_environment.h"
-#include "drake/common/symbolic_expression.h"
-#include "drake/common/symbolic_variable.h"
-#include "drake/common/symbolic_variables.h"
+#include "symbolic/eigen_types.h"
+#include "symbolic/hash.h"
+#include "symbolic/symbolic_environment.h"
+#include "symbolic/symbolic_expression.h"
+#include "symbolic/symbolic_variable.h"
+#include "symbolic/symbolic_variables.h"
 
 namespace drake {
 namespace symbolic {
@@ -43,24 +41,24 @@ enum class FormulaKind {
 // Total ordering between FormulaKinds
 bool operator<(FormulaKind k1, FormulaKind k2);
 
-class FormulaCell;                  // In drake/common/symbolic_formula_cell.h
-class FormulaFalse;                 // In drake/common/symbolic_formula_cell.h
-class FormulaTrue;                  // In drake/common/symbolic_formula_cell.h
-class FormulaVar;                   // In drake/common/symbolic_formula_cell.h
-class RelationalFormulaCell;        // In drake/common/symbolic_formula_cell.h
-class FormulaEq;                    // In drake/common/symbolic_formula_cell.h
-class FormulaNeq;                   // In drake/common/symbolic_formula_cell.h
-class FormulaGt;                    // In drake/common/symbolic_formula_cell.h
-class FormulaGeq;                   // In drake/common/symbolic_formula_cell.h
-class FormulaLt;                    // In drake/common/symbolic_formula_cell.h
-class FormulaLeq;                   // In drake/common/symbolic_formula_cell.h
-class NaryFormulaCell;              // In drake/common/symbolic_formula_cell.h
-class FormulaNot;                   // In drake/common/symbolic_formula_cell.h
-class FormulaAnd;                   // In drake/common/symbolic_formula_cell.h
-class FormulaOr;                    // In drake/common/symbolic_formula_cell.h
-class FormulaForall;                // In drake/common/symbolic_formula_cell.h
-class FormulaIsnan;                 // In drake/common/symbolic_formula_cell.h
-class FormulaPositiveSemidefinite;  // In drake/common/symbolic_formula_cell.h
+class FormulaCell;                  // In symbolic/symbolic_formula_cell.h
+class FormulaFalse;                 // In symbolic/symbolic_formula_cell.h
+class FormulaTrue;                  // In symbolic/symbolic_formula_cell.h
+class FormulaVar;                   // In symbolic/symbolic_formula_cell.h
+class RelationalFormulaCell;        // In symbolic/symbolic_formula_cell.h
+class FormulaEq;                    // In symbolic/symbolic_formula_cell.h
+class FormulaNeq;                   // In symbolic/symbolic_formula_cell.h
+class FormulaGt;                    // In symbolic/symbolic_formula_cell.h
+class FormulaGeq;                   // In symbolic/symbolic_formula_cell.h
+class FormulaLt;                    // In symbolic/symbolic_formula_cell.h
+class FormulaLeq;                   // In symbolic/symbolic_formula_cell.h
+class NaryFormulaCell;              // In symbolic/symbolic_formula_cell.h
+class FormulaNot;                   // In symbolic/symbolic_formula_cell.h
+class FormulaAnd;                   // In symbolic/symbolic_formula_cell.h
+class FormulaOr;                    // In symbolic/symbolic_formula_cell.h
+class FormulaForall;                // In symbolic/symbolic_formula_cell.h
+class FormulaIsnan;                 // In symbolic/symbolic_formula_cell.h
+class FormulaPositiveSemidefinite;  // In symbolic/symbolic_formula_cell.h
 
 /** Represents a symbolic form of a first-order logic formula.
 
@@ -110,7 +108,10 @@ Drake for readability.
 */
 class Formula {
  public:
-  DRAKE_DEFAULT_COPY_AND_MOVE_AND_ASSIGN(Formula)
+  Formula(const Formula&) = default;
+  Formula& operator=(const Formula&) = default;
+  Formula(Formula&&) = default;
+  Formula& operator=(Formula&&) = default;
 
   /** Default constructor. */
   Formula() { *this = True(); }
@@ -535,7 +536,7 @@ typename std::enable_if<
     typename detail::RelationalOpTraits<DerivedA, DerivedB>::ReturnType>::type
 operator==(const DerivedA& a1, const DerivedB& a2) {
   EIGEN_STATIC_ASSERT_SAME_MATRIX_SIZE(DerivedA, DerivedB);
-  DRAKE_ASSERT(a1.rows() == a2.rows() && a1.cols() == a2.cols());
+  assert(a1.rows() == a2.rows() && a1.cols() == a2.cols());
   return a1.binaryExpr(a2, std::equal_to<void>());
 }
 
@@ -608,7 +609,7 @@ typename std::enable_if<
     typename detail::RelationalOpTraits<DerivedA, DerivedB>::ReturnType>::type
 operator<=(const DerivedA& a1, const DerivedB& a2) {
   EIGEN_STATIC_ASSERT_SAME_MATRIX_SIZE(DerivedA, DerivedB);
-  DRAKE_ASSERT(a1.rows() == a2.rows() && a1.cols() == a2.cols());
+  assert(a1.rows() == a2.rows() && a1.cols() == a2.cols());
   return a1.binaryExpr(a2, std::less_equal<void>());
 }
 
@@ -661,7 +662,7 @@ typename std::enable_if<
     typename detail::RelationalOpTraits<DerivedA, DerivedB>::ReturnType>::type
 operator<(const DerivedA& a1, const DerivedB& a2) {
   EIGEN_STATIC_ASSERT_SAME_MATRIX_SIZE(DerivedA, DerivedB);
-  DRAKE_ASSERT(a1.rows() == a2.rows() && a1.cols() == a2.cols());
+  assert(a1.rows() == a2.rows() && a1.cols() == a2.cols());
   return a1.binaryExpr(a2, std::less<void>());
 }
 
@@ -712,7 +713,7 @@ typename std::enable_if<
     typename detail::RelationalOpTraits<DerivedA, DerivedB>::ReturnType>::type
 operator>=(const DerivedA& a1, const DerivedB& a2) {
   EIGEN_STATIC_ASSERT_SAME_MATRIX_SIZE(DerivedA, DerivedB);
-  DRAKE_ASSERT(a1.rows() == a2.rows() && a1.cols() == a2.cols());
+  assert(a1.rows() == a2.rows() && a1.cols() == a2.cols());
   return a1.binaryExpr(a2, std::greater_equal<void>());
 }
 
@@ -771,7 +772,7 @@ typename std::enable_if<
     typename detail::RelationalOpTraits<DerivedA, DerivedB>::ReturnType>::type
 operator>(const DerivedA& a1, const DerivedB& a2) {
   EIGEN_STATIC_ASSERT_SAME_MATRIX_SIZE(DerivedA, DerivedB);
-  DRAKE_ASSERT(a1.rows() == a2.rows() && a1.cols() == a2.cols());
+  assert(a1.rows() == a2.rows() && a1.cols() == a2.cols());
   return a1.binaryExpr(a2, std::greater<void>());
 }
 
@@ -829,7 +830,7 @@ typename std::enable_if<
     typename detail::RelationalOpTraits<DerivedA, DerivedB>::ReturnType>::type
 operator!=(const DerivedA& a1, const DerivedB& a2) {
   EIGEN_STATIC_ASSERT_SAME_MATRIX_SIZE(DerivedA, DerivedB);
-  DRAKE_ASSERT(a1.rows() == a2.rows() && a1.cols() == a2.cols());
+  assert(a1.rows() == a2.rows() && a1.cols() == a2.cols());
   return a1.binaryExpr(a2, std::not_equal_to<void>());
 }
 
@@ -921,7 +922,7 @@ typename std::enable_if<
     Formula>::type
 operator==(const DerivedA& m1, const DerivedB& m2) {
   EIGEN_STATIC_ASSERT_SAME_MATRIX_SIZE(DerivedA, DerivedB);
-  DRAKE_ASSERT(m1.rows() == m2.rows() && m1.cols() == m2.cols());
+  assert(m1.rows() == m2.rows() && m1.cols() == m2.cols());
   return m1.binaryExpr(m2, std::equal_to<void>()).redux(detail::logic_and);
 }
 
@@ -954,7 +955,7 @@ typename std::enable_if<
     Formula>::type
 operator!=(const DerivedA& m1, const DerivedB& m2) {
   EIGEN_STATIC_ASSERT_SAME_MATRIX_SIZE(DerivedA, DerivedB);
-  DRAKE_ASSERT(m1.rows() == m2.rows() && m1.cols() == m2.cols());
+  assert(m1.rows() == m2.rows() && m1.cols() == m2.cols());
   return m1.binaryExpr(m2, std::not_equal_to<void>()).redux(detail::logic_and);
 }
 
@@ -982,7 +983,7 @@ typename std::enable_if<
     Formula>::type
 operator<(const DerivedA& m1, const DerivedB& m2) {
   EIGEN_STATIC_ASSERT_SAME_MATRIX_SIZE(DerivedA, DerivedB);
-  DRAKE_ASSERT(m1.rows() == m2.rows() && m1.cols() == m2.cols());
+  assert(m1.rows() == m2.rows() && m1.cols() == m2.cols());
   return m1.binaryExpr(m2, std::less<void>()).redux(detail::logic_and);
 }
 
@@ -1010,7 +1011,7 @@ typename std::enable_if<
     Formula>::type
 operator<=(const DerivedA& m1, const DerivedB& m2) {
   EIGEN_STATIC_ASSERT_SAME_MATRIX_SIZE(DerivedA, DerivedB);
-  DRAKE_ASSERT(m1.rows() == m2.rows() && m1.cols() == m2.cols());
+  assert(m1.rows() == m2.rows() && m1.cols() == m2.cols());
   return m1.binaryExpr(m2, std::less_equal<void>()).redux(detail::logic_and);
 }
 
@@ -1038,7 +1039,7 @@ typename std::enable_if<
     Formula>::type
 operator>(const DerivedA& m1, const DerivedB& m2) {
   EIGEN_STATIC_ASSERT_SAME_MATRIX_SIZE(DerivedA, DerivedB);
-  DRAKE_ASSERT(m1.rows() == m2.rows() && m1.cols() == m2.cols());
+  assert(m1.rows() == m2.rows() && m1.cols() == m2.cols());
   return m1.binaryExpr(m2, std::greater<void>()).redux(detail::logic_and);
 }
 
@@ -1066,7 +1067,7 @@ typename std::enable_if<
     Formula>::type
 operator>=(const DerivedA& m1, const DerivedB& m2) {
   EIGEN_STATIC_ASSERT_SAME_MATRIX_SIZE(DerivedA, DerivedB);
-  DRAKE_ASSERT(m1.rows() == m2.rows() && m1.cols() == m2.cols());
+  assert(m1.rows() == m2.rows() && m1.cols() == m2.cols());
   return m1.binaryExpr(m2, std::greater_equal<void>()).redux(detail::logic_and);
 }
 
@@ -1077,20 +1078,6 @@ template <>
 struct hash_value<symbolic::Formula> {
   size_t operator()(const symbolic::Formula& f) const { return f.get_hash(); }
 };
-
-namespace assert {
-/* We allow assertion-like statements to receive a Formula.  Given the typical
- * uses of assertions and Formulas, rather than trying to be clever and, e.g.,
- * capture assertion data for later use or partially-solve the Formula to find
- * counterexamples, instead we've decided to ignore assertions for the purpose
- * of Formula.  They are syntax-checked, but always pass. */
-template <>
-struct ConditionTraits<symbolic::Formula> {
-  static constexpr bool is_valid = true;
-  static bool Evaluate(const symbolic::Formula&) { return true; }
-};
-}  // namespace assert
-
 }  // namespace drake
 
 namespace std {

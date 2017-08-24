@@ -1,4 +1,4 @@
-#include "drake/common/symbolic_variable.h"
+#include "symbolic/symbolic_variable.h"
 
 #include <atomic>
 #include <iostream>
@@ -7,8 +7,7 @@
 #include <string>
 #include <utility>
 
-#include "drake/common/drake_assert.h"
-#include "drake/common/never_destroyed.h"
+#include "symbolic/never_destroyed.h"
 
 using std::atomic;
 using std::make_shared;
@@ -30,7 +29,7 @@ Variable::Id Variable::get_next_id() {
 
 Variable::Variable(string name, const Type type)
     : id_{get_next_id()}, type_{type}, name_{make_shared<string>(move(name))} {
-  DRAKE_ASSERT(id_ > 0);
+  assert(id_ > 0);
 }
 Variable::Id Variable::get_id() const { return id_; }
 Variable::Type Variable::get_type() const { return type_; }
@@ -58,7 +57,7 @@ ostream& operator<<(ostream& os, Variable::Type type) {
       return os << "Boolean";
   }
   // Should be unreachable.
-  DRAKE_ABORT();
+  throw std::runtime_error("Should not be reachable.");
 }
 }  // namespace symbolic
 }  // namespace drake

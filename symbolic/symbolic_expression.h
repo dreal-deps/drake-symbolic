@@ -14,13 +14,11 @@
 
 #include <Eigen/Core>
 
-#include "drake/common/drake_assert.h"
-#include "drake/common/drake_copyable.h"
-#include "drake/common/eigen_types.h"
-#include "drake/common/hash.h"
-#include "drake/common/symbolic_environment.h"
-#include "drake/common/symbolic_variable.h"
-#include "drake/common/symbolic_variables.h"
+#include "symbolic/eigen_types.h"
+#include "symbolic/hash.h"
+#include "symbolic/symbolic_environment.h"
+#include "symbolic/symbolic_variable.h"
+#include "symbolic/symbolic_variables.h"
 
 namespace drake {
 
@@ -167,7 +165,10 @@ symbolic::Expression can be used as a scalar type of Eigen types.
 */
 class Expression {
  public:
-  DRAKE_DEFAULT_COPY_AND_MOVE_AND_ASSIGN(Expression)
+  Expression(const Expression&) = default;
+  Expression& operator=(const Expression&) = default;
+  Expression(Expression&&) = default;
+  Expression& operator=(Expression&&) = default;
 
   /** Default constructor. It constructs Zero(). */
   Expression() { *this = Zero(); }
@@ -242,7 +243,7 @@ class Expression {
    * expanded to `x^2 + 2xy + y^2`. Note that Expand applies recursively to
    * sub-expressions. For instance, `sin(2 * (x + y))` is expanded to `sin(2x +
    * 2y)`. It also simplifies "division by constant" cases. See
-   * "drake/common/test/symbolic_expansion_test.cc" to find the examples.
+   * "symbolic/test/symbolic_expansion_test.cc" to find the examples.
    *
    * @throws std::runtime_error if NaN is detected during expansion.
    */
@@ -422,9 +423,9 @@ class Expression {
   friend bool is_uninterpreted_function(const Expression& e);
 
   // Note that the following cast functions are only for low-level operations
-  // and not exposed to the user of drake/common/symbolic_expression.h
+  // and not exposed to the user of symbolic/symbolic_expression.h
   // header. These functions are declared in
-  // drake/common/symbolic_expression_cell.h header.
+  // symbolic/symbolic_expression_cell.h header.
   friend std::shared_ptr<ExpressionConstant> to_constant(const Expression& e);
   friend std::shared_ptr<ExpressionVar> to_variable(const Expression& e);
   friend std::shared_ptr<UnaryExpressionCell> to_unary(const Expression& e);
@@ -730,7 +731,7 @@ operator*(const MatrixL& lhs, const MatrixR& rhs) {
 
 }  // namespace symbolic
 
-/** Provides specialization of @c cond function defined in drake/common/cond.h
+/** Provides specialization of @c cond function defined in symbolic/cond.h
  * file. This specialization is required to handle @c double to @c
  * symbolic::Expression conversion so that we can write one such as <tt>cond(x >
  * 0.0, 1.0, -1.0)</tt>.
@@ -873,7 +874,7 @@ typename std::enable_if<
     bool>::type
 CheckStructuralEquality(const DerivedA& m1, const DerivedB& m2) {
   EIGEN_STATIC_ASSERT_SAME_MATRIX_SIZE(DerivedA, DerivedB);
-  DRAKE_ASSERT(m1.rows() == m2.rows() && m1.cols() == m2.cols());
+  assert(m1.rows() == m2.rows() && m1.cols() == m2.cols());
   // Note that std::equal_to<Expression> calls Expression::EqualTo which checks
   // structural equality between two expressions.
   return m1.binaryExpr(m2, std::equal_to<Expression>{}).all();

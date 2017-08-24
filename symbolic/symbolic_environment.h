@@ -5,9 +5,8 @@
 #include <string>
 #include <unordered_map>
 
-#include "drake/common/drake_copyable.h"
-#include "drake/common/symbolic_variable.h"
-#include "drake/common/symbolic_variables.h"
+#include "symbolic/symbolic_variable.h"
+#include "symbolic/symbolic_variables.h"
 
 namespace drake {
 namespace symbolic {
@@ -51,7 +50,10 @@ namespace symbolic {
  */
 class Environment {
  public:
-  DRAKE_DEFAULT_COPY_AND_MOVE_AND_ASSIGN(Environment)
+  Environment(const Environment&) = default;
+  Environment& operator=(const Environment&) = default;
+  Environment(Environment&&) = default;
+  Environment& operator=(Environment&&) = default;
 
   typedef Variable key_type;
   typedef double mapped_type;

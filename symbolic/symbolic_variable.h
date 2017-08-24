@@ -8,8 +8,7 @@
 
 #include <Eigen/Core>
 
-#include "drake/common/drake_copyable.h"
-#include "drake/common/hash.h"
+#include "symbolic/hash.h"
 
 namespace drake {
 namespace symbolic {
@@ -28,7 +27,10 @@ class Variable {
     BOOLEAN,     ///< A BOOLEAN variable takes a `bool` value.
   };
 
-  DRAKE_DEFAULT_COPY_AND_MOVE_AND_ASSIGN(Variable)
+  Variable(const Variable&) = default;
+  Variable& operator=(const Variable&) = default;
+  Variable(Variable&&) = default;
+  Variable& operator=(Variable&&) = default;
 
   /** Default constructor. Constructs a dummy variable of CONTINUOUS type. This
    *  is needed to have Eigen::Matrix<Variable>. The objects created by the
@@ -135,7 +137,7 @@ typename std::enable_if<
     bool>::type
 CheckStructuralEquality(const DerivedA& m1, const DerivedB& m2) {
   EIGEN_STATIC_ASSERT_SAME_MATRIX_SIZE(DerivedA, DerivedB);
-  DRAKE_ASSERT(m1.rows() == m2.rows() && m1.cols() == m2.cols());
+  assert(m1.rows() == m2.rows() && m1.cols() == m2.cols());
   return m1.binaryExpr(m2, std::equal_to<Variable>{}).all();
 }
 }  // namespace symbolic

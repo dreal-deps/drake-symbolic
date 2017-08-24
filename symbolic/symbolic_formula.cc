@@ -1,4 +1,4 @@
-#include "drake/common/symbolic_formula.h"
+#include "symbolic/symbolic_formula.h"
 
 #include <cstddef>
 #include <iostream>
@@ -6,12 +6,11 @@
 #include <set>
 #include <sstream>
 
-#include "drake/common/drake_assert.h"
-#include "drake/common/symbolic_environment.h"
-#include "drake/common/symbolic_expression.h"
-#include "drake/common/symbolic_formula_cell.h"
-#include "drake/common/symbolic_variable.h"
-#include "drake/common/symbolic_variables.h"
+#include "symbolic/symbolic_environment.h"
+#include "symbolic/symbolic_expression.h"
+#include "symbolic/symbolic_formula_cell.h"
+#include "symbolic/symbolic_variable.h"
+#include "symbolic/symbolic_variables.h"
 
 namespace drake {
 namespace symbolic {
@@ -32,23 +31,23 @@ Formula::Formula(shared_ptr<FormulaCell> ptr) : ptr_{std::move(ptr)} {}
 Formula::Formula(const Variable& var) : ptr_{make_shared<FormulaVar>(var)} {}
 
 FormulaKind Formula::get_kind() const {
-  DRAKE_ASSERT(ptr_ != nullptr);
+  assert(ptr_ != nullptr);
   return ptr_->get_kind();
 }
 
 size_t Formula::get_hash() const {
-  DRAKE_ASSERT(ptr_ != nullptr);
+  assert(ptr_ != nullptr);
   return ptr_->get_hash();
 }
 
 Variables Formula::GetFreeVariables() const {
-  DRAKE_ASSERT(ptr_ != nullptr);
+  assert(ptr_ != nullptr);
   return ptr_->GetFreeVariables();
 }
 
 bool Formula::EqualTo(const Formula& f) const {
-  DRAKE_ASSERT(ptr_ != nullptr);
-  DRAKE_ASSERT(f.ptr_ != nullptr);
+  assert(ptr_ != nullptr);
+  assert(f.ptr_ != nullptr);
   if (ptr_ == f.ptr_) {
     // pointer equality
     return true;
@@ -77,23 +76,23 @@ bool Formula::Less(const Formula& f) const {
 }
 
 bool Formula::Evaluate(const Environment& env) const {
-  DRAKE_ASSERT(ptr_ != nullptr);
+  assert(ptr_ != nullptr);
   return ptr_->Evaluate(env);
 }
 
 Formula Formula::Substitute(const Variable& var, const Expression& e) const {
-  DRAKE_ASSERT(ptr_ != nullptr);
+  assert(ptr_ != nullptr);
   return ptr_->Substitute({{var, e}}, FormulaSubstitution{});
 }
 
 Formula Formula::Substitute(const Variable& var, const Formula& f) const {
-  DRAKE_ASSERT(ptr_ != nullptr);
+  assert(ptr_ != nullptr);
   return ptr_->Substitute(ExpressionSubstitution{}, {{var, f}});
 }
 
 Formula Formula::Substitute(const ExpressionSubstitution& expr_subst,
                             const FormulaSubstitution& formula_subst) const {
-  DRAKE_ASSERT(ptr_ != nullptr);
+  assert(ptr_ != nullptr);
   if (!expr_subst.empty() || !formula_subst.empty()) {
     return ptr_->Substitute(expr_subst, formula_subst);
   }
@@ -101,7 +100,7 @@ Formula Formula::Substitute(const ExpressionSubstitution& expr_subst,
 }
 
 Formula Formula::Substitute(const ExpressionSubstitution& expr_subst) const {
-  DRAKE_ASSERT(ptr_ != nullptr);
+  assert(ptr_ != nullptr);
   if (!expr_subst.empty()) {
     return ptr_->Substitute(expr_subst, FormulaSubstitution{});
   }
@@ -109,7 +108,7 @@ Formula Formula::Substitute(const ExpressionSubstitution& expr_subst) const {
 }
 
 Formula Formula::Substitute(const FormulaSubstitution& formula_subst) const {
-  DRAKE_ASSERT(ptr_ != nullptr);
+  assert(ptr_ != nullptr);
   if (!formula_subst.empty()) {
     return ptr_->Substitute(ExpressionSubstitution{}, formula_subst);
   }
@@ -247,7 +246,7 @@ Formula operator!(const Formula& f) {
 Formula operator!(const Variable& v) { return !Formula(v); }
 
 ostream& operator<<(ostream& os, const Formula& f) {
-  DRAKE_ASSERT(f.ptr_ != nullptr);
+  assert(f.ptr_ != nullptr);
   return f.ptr_->Display(os);
 }
 
@@ -360,16 +359,16 @@ bool is_positive_semidefinite(const Formula& f) {
 }
 
 const Variable& get_variable(const Formula& f) {
-  DRAKE_ASSERT(is_variable(f));
+  assert(is_variable(f));
   return to_variable(f)->get_variable();
 }
 
 const Expression& get_lhs_expression(const Formula& f) {
-  DRAKE_ASSERT(is_relational(f));
+  assert(is_relational(f));
   return to_relational(f)->get_lhs_expression();
 }
 const Expression& get_rhs_expression(const Formula& f) {
-  DRAKE_ASSERT(is_relational(f));
+  assert(is_relational(f));
   return to_relational(f)->get_rhs_expression();
 }
 

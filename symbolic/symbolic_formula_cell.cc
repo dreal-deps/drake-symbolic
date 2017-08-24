@@ -1,4 +1,4 @@
-#include "drake/common/symbolic_formula_cell.h"
+#include "symbolic/symbolic_formula_cell.h"
 
 #include <algorithm>
 #include <iostream>
@@ -7,13 +7,12 @@
 #include <sstream>
 #include <stdexcept>
 
-#include "drake/common/drake_assert.h"
-#include "drake/common/hash.h"
-#include "drake/common/symbolic_environment.h"
-#include "drake/common/symbolic_expression.h"
-#include "drake/common/symbolic_formula.h"
-#include "drake/common/symbolic_variable.h"
-#include "drake/common/symbolic_variables.h"
+#include "symbolic/hash.h"
+#include "symbolic/symbolic_environment.h"
+#include "symbolic/symbolic_expression.h"
+#include "symbolic/symbolic_formula.h"
+#include "symbolic/symbolic_variable.h"
+#include "symbolic/symbolic_variables.h"
 
 namespace drake {
 namespace math {
@@ -67,14 +66,14 @@ Variables RelationalFormulaCell::GetFreeVariables() const {
 
 bool RelationalFormulaCell::EqualTo(const FormulaCell& f) const {
   // Formula::EqualTo guarantees the following assertion.
-  DRAKE_ASSERT(get_kind() == f.get_kind());
+  assert(get_kind() == f.get_kind());
   const auto& rel_f = static_cast<const RelationalFormulaCell&>(f);
   return e_lhs_.EqualTo(rel_f.e_lhs_) && e_rhs_.EqualTo(rel_f.e_rhs_);
 }
 
 bool RelationalFormulaCell::Less(const FormulaCell& f) const {
   // Formula::Less guarantees the following assertion.
-  DRAKE_ASSERT(get_kind() == f.get_kind());
+  assert(get_kind() == f.get_kind());
   const auto& rel_f = static_cast<const RelationalFormulaCell&>(f);
   if (e_lhs_.Less(rel_f.e_lhs_)) {
     return true;
@@ -100,7 +99,7 @@ Variables NaryFormulaCell::GetFreeVariables() const {
 
 bool NaryFormulaCell::EqualTo(const FormulaCell& f) const {
   // Formula::EqualTo guarantees the following assertion.
-  DRAKE_ASSERT(get_kind() == f.get_kind());
+  assert(get_kind() == f.get_kind());
   const auto& nary_f = static_cast<const NaryFormulaCell&>(f);
   return equal(
       formulas_.cbegin(), formulas_.cend(), nary_f.formulas_.cbegin(),
@@ -110,7 +109,7 @@ bool NaryFormulaCell::EqualTo(const FormulaCell& f) const {
 
 bool NaryFormulaCell::Less(const FormulaCell& f) const {
   // Formula::Less guarantees the following assertion.
-  DRAKE_ASSERT(get_kind() == f.get_kind());
+  assert(get_kind() == f.get_kind());
   const auto& nary_f = static_cast<const NaryFormulaCell&>(f);
   return lexicographical_compare(
       formulas_.cbegin(), formulas_.cend(), nary_f.formulas_.cbegin(),
@@ -121,7 +120,7 @@ bool NaryFormulaCell::Less(const FormulaCell& f) const {
 ostream& NaryFormulaCell::DisplayWithOp(ostream& os, const string& op) const {
   const set<Formula>& formulas{get_operands()};
   auto it(formulas.cbegin());
-  DRAKE_ASSERT(formulas.size() > 1u);
+  assert(formulas.size() > 1u);
   os << "(";
   os << *it;
   ++it;
@@ -140,13 +139,13 @@ Variables FormulaTrue::GetFreeVariables() const { return Variables{}; }
 
 bool FormulaTrue::EqualTo(const FormulaCell& f) const {
   // Formula::EqualTo guarantees the following assertion.
-  DRAKE_ASSERT(get_kind() == f.get_kind());
+  assert(get_kind() == f.get_kind());
   return true;  // There is only one instance of this kind.
 }
 
 bool FormulaTrue::Less(const FormulaCell& f) const {
   // Formula::Less guarantees the following assertion.
-  DRAKE_ASSERT(get_kind() == f.get_kind());
+  assert(get_kind() == f.get_kind());
   // True < True ==> false
   return false;
 }
@@ -167,13 +166,13 @@ Variables FormulaFalse::GetFreeVariables() const { return Variables{}; }
 
 bool FormulaFalse::EqualTo(const FormulaCell& f) const {
   // Formula::EqualTo guarantees the following assertion.
-  DRAKE_ASSERT(get_kind() == f.get_kind());
+  assert(get_kind() == f.get_kind());
   return true;  // There is only one instance of this kind.
 }
 
 bool FormulaFalse::Less(const FormulaCell& f) const {
   // Formula::Less guarantees the following assertion.
-  DRAKE_ASSERT(get_kind() == f.get_kind());
+  assert(get_kind() == f.get_kind());
   // False < False ==> false
   return false;
 }
@@ -191,22 +190,22 @@ FormulaVar::FormulaVar(const Variable& v)
     : FormulaCell{FormulaKind::Var, hash_value<Variable>{}(v)}, var_{v} {
   // Dummy symbolic variable (ID = 0) should not be used in constructing
   // symbolic formulas.
-  DRAKE_ASSERT(!var_.is_dummy());
-  DRAKE_ASSERT(var_.get_type() == Variable::Type::BOOLEAN);
+  assert(!var_.is_dummy());
+  assert(var_.get_type() == Variable::Type::BOOLEAN);
 }
 
 Variables FormulaVar::GetFreeVariables() const { return Variables{var_}; }
 
 bool FormulaVar::EqualTo(const FormulaCell& f) const {
   // Formula::EqualTo guarantees the following assertion.
-  DRAKE_ASSERT(get_kind() == f.get_kind());
+  assert(get_kind() == f.get_kind());
   const FormulaVar& f_var{static_cast<const FormulaVar&>(f)};
   return var_.equal_to(f_var.var_);
 }
 
 bool FormulaVar::Less(const FormulaCell& f) const {
   // Formula::Less guarantees the following assertion.
-  DRAKE_ASSERT(get_kind() == f.get_kind());
+  assert(get_kind() == f.get_kind());
   const FormulaVar& f_var{static_cast<const FormulaVar&>(f)};
   return var_.less(f_var.var_);
 }
@@ -379,7 +378,7 @@ ostream& FormulaLeq::Display(ostream& os) const {
 
 FormulaAnd::FormulaAnd(const set<Formula>& formulas)
     : NaryFormulaCell{FormulaKind::And, formulas} {
-  DRAKE_ASSERT(get_operands().size() > 1u);
+  assert(get_operands().size() > 1u);
 }
 
 FormulaAnd::FormulaAnd(const Formula& f1, const Formula& f2)
@@ -413,7 +412,7 @@ ostream& FormulaAnd::Display(ostream& os) const {
 
 FormulaOr::FormulaOr(const set<Formula>& formulas)
     : NaryFormulaCell{FormulaKind::Or, formulas} {
-  DRAKE_ASSERT(get_operands().size() > 1u);
+  assert(get_operands().size() > 1u);
 }
 
 FormulaOr::FormulaOr(const Formula& f1, const Formula& f2)
@@ -452,14 +451,14 @@ Variables FormulaNot::GetFreeVariables() const { return f_.GetFreeVariables(); }
 
 bool FormulaNot::EqualTo(const FormulaCell& f) const {
   // Formula::EqualTo guarantees the following assertion.
-  DRAKE_ASSERT(get_kind() == f.get_kind());
+  assert(get_kind() == f.get_kind());
   const FormulaNot& f_not{static_cast<const FormulaNot&>(f)};
   return f_.EqualTo(f_not.f_);
 }
 
 bool FormulaNot::Less(const FormulaCell& f) const {
   // Formula::Less guarantees the following assertion.
-  DRAKE_ASSERT(get_kind() == f.get_kind());
+  assert(get_kind() == f.get_kind());
   const FormulaNot& not_f{static_cast<const FormulaNot&>(f)};
   return f_.Less(not_f.f_);
 }
@@ -488,14 +487,14 @@ Variables FormulaForall::GetFreeVariables() const {
 
 bool FormulaForall::EqualTo(const FormulaCell& f) const {
   // Formula::EqualTo guarantees the following assertion.
-  DRAKE_ASSERT(get_kind() == f.get_kind());
+  assert(get_kind() == f.get_kind());
   const FormulaForall& f_forall{static_cast<const FormulaForall&>(f)};
   return vars_ == f_forall.vars_ && f_.EqualTo(f_forall.f_);
 }
 
 bool FormulaForall::Less(const FormulaCell& f) const {
   // Formula::Less guarantees the following assertion.
-  DRAKE_ASSERT(get_kind() == f.get_kind());
+  assert(get_kind() == f.get_kind());
   const FormulaForall& forall_f{static_cast<const FormulaForall&>(f)};
   if (vars_ < forall_f.vars_) {
     return true;
@@ -543,14 +542,14 @@ Variables FormulaIsnan::GetFreeVariables() const { return e_.GetVariables(); }
 
 bool FormulaIsnan::EqualTo(const FormulaCell& f) const {
   // Formula::EqualTo guarantees the following assertion.
-  DRAKE_ASSERT(get_kind() == f.get_kind());
+  assert(get_kind() == f.get_kind());
   const FormulaIsnan& f_isnan{static_cast<const FormulaIsnan&>(f)};
   return e_.EqualTo(f_isnan.e_);
 }
 
 bool FormulaIsnan::Less(const FormulaCell& f) const {
   // Formula::Less guarantees the following assertion.
-  DRAKE_ASSERT(get_kind() == f.get_kind());
+  assert(get_kind() == f.get_kind());
   const FormulaIsnan& f_isnan{static_cast<const FormulaIsnan&>(f)};
   return e_.Less(f_isnan.e_);
 }
@@ -592,7 +591,7 @@ struct VariablesCollector {
 
   // Called for the first coefficient.
   void init(const Expression& e, Index i, Index j) {
-    DRAKE_ASSERT(vars_.empty());
+    assert(vars_.empty());
     return operator()(e, i, j);
   }
   // Called for all other coefficients.
@@ -612,7 +611,7 @@ Variables FormulaPositiveSemidefinite::GetFreeVariables() const {
 
 bool FormulaPositiveSemidefinite::EqualTo(const FormulaCell& f) const {
   // Formula::EqualTo guarantees the following assertion.
-  DRAKE_ASSERT(get_kind() == f.get_kind());
+  assert(get_kind() == f.get_kind());
   const FormulaPositiveSemidefinite& f_psd{
       static_cast<const FormulaPositiveSemidefinite&>(f)};
   return CheckStructuralEquality(m_, f_psd.m_);
@@ -620,7 +619,7 @@ bool FormulaPositiveSemidefinite::EqualTo(const FormulaCell& f) const {
 
 bool FormulaPositiveSemidefinite::Less(const FormulaCell& f) const {
   // Formula::Less guarantees the following assertion.
-  DRAKE_ASSERT(get_kind() == f.get_kind());
+  assert(get_kind() == f.get_kind());
   const FormulaPositiveSemidefinite& f_psd{
       static_cast<const FormulaPositiveSemidefinite&>(f)};
 
@@ -633,7 +632,7 @@ bool FormulaPositiveSemidefinite::Less(const FormulaCell& f) const {
   }
 
   // No need to compare cols since m_ and f_psd.m_ are square matrices.
-  DRAKE_ASSERT(m_.rows() == f_psd.m_.rows() && m_.cols() == f_psd.m_.cols());
+  assert(m_.rows() == f_psd.m_.rows() && m_.cols() == f_psd.m_.cols());
 
   // Element-wise comparison.
   const int num_of_elements = m_.rows() * m_.cols();
@@ -734,21 +733,21 @@ bool is_positive_semidefinite(const FormulaCell& f) {
 }
 
 shared_ptr<FormulaFalse> to_false(const shared_ptr<FormulaCell>& f_ptr) {
-  DRAKE_ASSERT(is_false(*f_ptr));
+  assert(is_false(*f_ptr));
   return static_pointer_cast<FormulaFalse>(f_ptr);
 }
 
 shared_ptr<FormulaFalse> to_false(const Formula& f) { return to_false(f.ptr_); }
 
 shared_ptr<FormulaTrue> to_true(const shared_ptr<FormulaCell>& f_ptr) {
-  DRAKE_ASSERT(is_true(*f_ptr));
+  assert(is_true(*f_ptr));
   return static_pointer_cast<FormulaTrue>(f_ptr);
 }
 
 shared_ptr<FormulaTrue> to_true(const Formula& f) { return to_true(f.ptr_); }
 
 shared_ptr<FormulaVar> to_variable(const shared_ptr<FormulaCell>& f_ptr) {
-  DRAKE_ASSERT(is_variable(*f_ptr));
+  assert(is_variable(*f_ptr));
   return static_pointer_cast<FormulaVar>(f_ptr);
 }
 
@@ -758,7 +757,7 @@ shared_ptr<FormulaVar> to_variable(const Formula& f) {
 
 shared_ptr<RelationalFormulaCell> to_relational(
     const shared_ptr<FormulaCell>& f_ptr) {
-  DRAKE_ASSERT(is_relational(*f_ptr));
+  assert(is_relational(*f_ptr));
   return static_pointer_cast<RelationalFormulaCell>(f_ptr);
 }
 
@@ -767,7 +766,7 @@ shared_ptr<RelationalFormulaCell> to_relational(const Formula& f) {
 }
 
 shared_ptr<FormulaEq> to_equal_to(const shared_ptr<FormulaCell>& f_ptr) {
-  DRAKE_ASSERT(is_equal_to(*f_ptr));
+  assert(is_equal_to(*f_ptr));
   return static_pointer_cast<FormulaEq>(f_ptr);
 }
 
@@ -776,7 +775,7 @@ shared_ptr<FormulaEq> to_equal_to(const Formula& f) {
 }
 
 shared_ptr<FormulaNeq> to_not_equal_to(const shared_ptr<FormulaCell>& f_ptr) {
-  DRAKE_ASSERT(is_not_equal_to(*f_ptr));
+  assert(is_not_equal_to(*f_ptr));
   return static_pointer_cast<FormulaNeq>(f_ptr);
 }
 
@@ -785,7 +784,7 @@ shared_ptr<FormulaNeq> to_not_equal_to(const Formula& f) {
 }
 
 shared_ptr<FormulaGt> to_greater_than(const shared_ptr<FormulaCell>& f_ptr) {
-  DRAKE_ASSERT(is_greater_than(*f_ptr));
+  assert(is_greater_than(*f_ptr));
   return static_pointer_cast<FormulaGt>(f_ptr);
 }
 
@@ -795,7 +794,7 @@ shared_ptr<FormulaGt> to_greater_than(const Formula& f) {
 
 shared_ptr<FormulaGeq> to_greater_than_or_equal_to(
     const shared_ptr<FormulaCell>& f_ptr) {
-  DRAKE_ASSERT(is_greater_than_or_equal_to(*f_ptr));
+  assert(is_greater_than_or_equal_to(*f_ptr));
   return static_pointer_cast<FormulaGeq>(f_ptr);
 }
 
@@ -804,7 +803,7 @@ shared_ptr<FormulaGeq> to_greater_than_or_equal_to(const Formula& f) {
 }
 
 shared_ptr<FormulaLt> to_less_than(const shared_ptr<FormulaCell>& f_ptr) {
-  DRAKE_ASSERT(is_less_than(*f_ptr));
+  assert(is_less_than(*f_ptr));
   return static_pointer_cast<FormulaLt>(f_ptr);
 }
 
@@ -814,7 +813,7 @@ shared_ptr<FormulaLt> to_less_than(const Formula& f) {
 
 shared_ptr<FormulaLeq> to_less_than_or_equal_to(
     const shared_ptr<FormulaCell>& f_ptr) {
-  DRAKE_ASSERT(is_less_than_or_equal_to(*f_ptr));
+  assert(is_less_than_or_equal_to(*f_ptr));
   return static_pointer_cast<FormulaLeq>(f_ptr);
 }
 
@@ -823,7 +822,7 @@ shared_ptr<FormulaLeq> to_less_than_or_equal_to(const Formula& f) {
 }
 
 shared_ptr<NaryFormulaCell> to_nary(const shared_ptr<FormulaCell>& f_ptr) {
-  DRAKE_ASSERT(is_nary(*f_ptr));
+  assert(is_nary(*f_ptr));
   return static_pointer_cast<NaryFormulaCell>(f_ptr);
 }
 
@@ -832,7 +831,7 @@ shared_ptr<NaryFormulaCell> to_nary(const Formula& f) {
 }
 
 shared_ptr<FormulaAnd> to_conjunction(const shared_ptr<FormulaCell>& f_ptr) {
-  DRAKE_ASSERT(is_conjunction(*f_ptr));
+  assert(is_conjunction(*f_ptr));
   return static_pointer_cast<FormulaAnd>(f_ptr);
 }
 
@@ -841,7 +840,7 @@ shared_ptr<FormulaAnd> to_conjunction(const Formula& f) {
 }
 
 shared_ptr<FormulaOr> to_disjunction(const shared_ptr<FormulaCell>& f_ptr) {
-  DRAKE_ASSERT(is_disjunction(*f_ptr));
+  assert(is_disjunction(*f_ptr));
   return static_pointer_cast<FormulaOr>(f_ptr);
 }
 
@@ -850,7 +849,7 @@ shared_ptr<FormulaOr> to_disjunction(const Formula& f) {
 }
 
 shared_ptr<FormulaNot> to_negation(const shared_ptr<FormulaCell>& f_ptr) {
-  DRAKE_ASSERT(is_negation(*f_ptr));
+  assert(is_negation(*f_ptr));
   return static_pointer_cast<FormulaNot>(f_ptr);
 }
 
@@ -859,7 +858,7 @@ shared_ptr<FormulaNot> to_negation(const Formula& f) {
 }
 
 shared_ptr<FormulaForall> to_forall(const shared_ptr<FormulaCell>& f_ptr) {
-  DRAKE_ASSERT(is_forall(*f_ptr));
+  assert(is_forall(*f_ptr));
   return static_pointer_cast<FormulaForall>(f_ptr);
 }
 
@@ -868,7 +867,7 @@ shared_ptr<FormulaForall> to_forall(const Formula& f) {
 }
 
 shared_ptr<FormulaIsnan> to_isnan(const shared_ptr<FormulaCell>& f_ptr) {
-  DRAKE_ASSERT(is_isnan(*f_ptr));
+  assert(is_isnan(*f_ptr));
   return static_pointer_cast<FormulaIsnan>(f_ptr);
 }
 
@@ -876,7 +875,7 @@ shared_ptr<FormulaIsnan> to_isnan(const Formula& f) { return to_isnan(f.ptr_); }
 
 shared_ptr<FormulaPositiveSemidefinite> to_positive_semidefinite(
     const shared_ptr<FormulaCell>& f_ptr) {
-  DRAKE_ASSERT(is_positive_semidefinite(*f_ptr));
+  assert(is_positive_semidefinite(*f_ptr));
   return static_pointer_cast<FormulaPositiveSemidefinite>(f_ptr);
 }
 

@@ -3,9 +3,9 @@
 
 #include <gtest/gtest.h>
 
-#include "drake/common/symbolic_expression.h"
-#include "drake/common/symbolic_formula.h"
-#include "drake/common/symbolic_variable.h"
+#include "symbolic/symbolic_expression.h"
+#include "symbolic/symbolic_formula.h"
+#include "symbolic/symbolic_variable.h"
 
 namespace drake {
 namespace symbolic {

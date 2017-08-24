@@ -2,8 +2,7 @@
 
 #include <utility>
 
-#include "drake/common/drake_assert.h"
-#include "drake/common/symbolic_formula.h"
+#include "symbolic/symbolic_formula.h"
 
 namespace drake {
 namespace symbolic {
@@ -17,7 +16,7 @@ namespace symbolic {
 /// `VisitIsnan`, `VisitPositiveSemidefinite`.
 ///
 /// Check the implementation of @c NegationNormalFormConverter class in
-/// drake/common/test/symbolic_formula_visitor_test.cc file to find an example.
+/// symbolic/test/symbolic_formula_visitor_test.cc file to find an example.
 template <typename Result, typename Visitor, typename... Args>
 Result VisitFormula(Visitor* v, const Formula& f, Args&&... args) {
   switch (f.get_kind()) {
@@ -54,7 +53,7 @@ Result VisitFormula(Visitor* v, const Formula& f, Args&&... args) {
   }
   // Should not be reachable. But we need the following to avoid "control
   // reaches end of non-void function" gcc-warning.
-  DRAKE_ABORT();
+  throw std::runtime_error("Should not be reachable.");
 }
 
 }  // namespace symbolic

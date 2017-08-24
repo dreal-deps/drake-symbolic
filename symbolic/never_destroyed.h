@@ -4,8 +4,6 @@
 #include <type_traits>
 #include <utility>
 
-#include "drake/common/drake_copyable.h"
-
 namespace drake {
 
 /// Wraps an underlying type T such that its storage is a direct member field
@@ -24,7 +22,10 @@ namespace drake {
 template <typename T>
 class never_destroyed {
  public:
-  DRAKE_NO_COPY_NO_MOVE_NO_ASSIGN(never_destroyed)
+  never_destroyed(const never_destroyed&) = delete;
+  void operator=(const never_destroyed&) = delete;
+  never_destroyed(never_destroyed&&) = delete;
+  void operator=(never_destroyed&&) = delete;
 
   /// Passes the constructor arguments along to T using perfect forwarding.
   template <typename... Args>

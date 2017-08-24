@@ -1,4 +1,4 @@
-#include "drake/common/symbolic_expression.h"
+#include "symbolic/symbolic_expression.h"
 
 #include <algorithm>
 #include <cmath>
@@ -11,13 +11,12 @@
 
 #include <Eigen/Core>
 
-#include "drake/common/drake_assert.h"
-#include "drake/common/never_destroyed.h"
-#include "drake/common/symbolic_environment.h"
-#include "drake/common/symbolic_expression_cell.h"
-#include "drake/common/symbolic_formula.h"
-#include "drake/common/symbolic_variable.h"
-#include "drake/common/symbolic_variables.h"
+#include "symbolic/never_destroyed.h"
+#include "symbolic/symbolic_environment.h"
+#include "symbolic/symbolic_expression_cell.h"
+#include "symbolic/symbolic_formula.h"
+#include "symbolic/symbolic_variable.h"
+#include "symbolic/symbolic_variables.h"
 
 namespace drake {
 namespace symbolic {
@@ -53,14 +52,14 @@ shared_ptr<ExpressionCell> make_cell(const double d) {
 // Negates an addition expression.
 // - (E_1 + ... + E_n) => (-E_1 + ... + -E_n)
 Expression NegateAddition(const Expression& e) {
-  DRAKE_ASSERT(is_addition(e));
+  assert(is_addition(e));
   return ExpressionAddFactory{to_addition(e)}.Negate().GetExpression();
 }
 
 // Negates a multiplication expression.
 // - (c0 * E_1 * ... * E_n) => (-c0 * E_1 * ... * E_n)
 Expression NegateMultiplication(const Expression& e) {
-  DRAKE_ASSERT(is_multiplication(e));
+  assert(is_multiplication(e));
   return ExpressionMulFactory{to_multiplication(e)}.Negate().GetExpression();
 }
 }  // namespace
@@ -71,11 +70,11 @@ Expression::Expression(const double d) : ptr_{make_cell(d)} {}
 Expression::Expression(shared_ptr<ExpressionCell> ptr) : ptr_{std::move(ptr)} {}
 
 ExpressionKind Expression::get_kind() const {
-  DRAKE_ASSERT(ptr_ != nullptr);
+  assert(ptr_ != nullptr);
   return ptr_->get_kind();
 }
 size_t Expression::get_hash() const {
-  DRAKE_ASSERT(ptr_ != nullptr);
+  assert(ptr_ != nullptr);
   return ptr_->get_hash();
 }
 
@@ -106,13 +105,13 @@ Expression Expression::NaN() {
 }
 
 Variables Expression::GetVariables() const {
-  DRAKE_ASSERT(ptr_ != nullptr);
+  assert(ptr_ != nullptr);
   return ptr_->GetVariables();
 }
 
 bool Expression::EqualTo(const Expression& e) const {
-  DRAKE_ASSERT(ptr_ != nullptr);
-  DRAKE_ASSERT(e.ptr_ != nullptr);
+  assert(ptr_ != nullptr);
+  assert(e.ptr_ != nullptr);
   if (ptr_ == e.ptr_) {
     return true;
   }
@@ -128,8 +127,8 @@ bool Expression::EqualTo(const Expression& e) const {
 }
 
 bool Expression::Less(const Expression& e) const {
-  DRAKE_ASSERT(ptr_ != nullptr);
-  DRAKE_ASSERT(e.ptr_ != nullptr);
+  assert(ptr_ != nullptr);
+  assert(e.ptr_ != nullptr);
   if (ptr_ == e.ptr_) {
     return false;  // this equals to e, not less-than.
   }
@@ -146,12 +145,12 @@ bool Expression::Less(const Expression& e) const {
 }
 
 bool Expression::is_polynomial() const {
-  DRAKE_ASSERT(ptr_ != nullptr);
+  assert(ptr_ != nullptr);
   return ptr_->is_polynomial();
 }
 
 double Expression::Evaluate(const Environment& env) const {
-  DRAKE_ASSERT(ptr_ != nullptr);
+  assert(ptr_ != nullptr);
   return ptr_->Evaluate(env);
 }
 
@@ -167,20 +166,20 @@ Expression Expression::EvaluatePartial(const Environment& env) const {
 }
 
 Expression Expression::Expand() const {
-  DRAKE_ASSERT(ptr_ != nullptr);
+  assert(ptr_ != nullptr);
   return ptr_->Expand();
 }
 
 Expression Expression::Substitute(const Variable& var,
                                   const Expression& e) const {
-  DRAKE_ASSERT(ptr_ != nullptr);
+  assert(ptr_ != nullptr);
   return ptr_->Substitute({{var, e}}, FormulaSubstitution{});
 }
 
 Expression Expression::Substitute(
     const ExpressionSubstitution& expr_subst,
     const FormulaSubstitution& formula_subst) const {
-  DRAKE_ASSERT(ptr_ != nullptr);
+  assert(ptr_ != nullptr);
   if (!expr_subst.empty() || !formula_subst.empty()) {
     return ptr_->Substitute(expr_subst, formula_subst);
   }
@@ -189,7 +188,7 @@ Expression Expression::Substitute(
 
 Expression Expression::Substitute(
     const ExpressionSubstitution& expr_subst) const {
-  DRAKE_ASSERT(ptr_ != nullptr);
+  assert(ptr_ != nullptr);
   if (!expr_subst.empty()) {
     return ptr_->Substitute(expr_subst, FormulaSubstitution{});
   }
@@ -198,7 +197,7 @@ Expression Expression::Substitute(
 
 Expression Expression::Substitute(
     const FormulaSubstitution& formula_subst) const {
-  DRAKE_ASSERT(ptr_ != nullptr);
+  assert(ptr_ != nullptr);
   if (!formula_subst.empty()) {
     return ptr_->Substitute(ExpressionSubstitution{}, formula_subst);
   }
@@ -206,7 +205,7 @@ Expression Expression::Substitute(
 }
 
 Expression Expression::Differentiate(const Variable& x) const {
-  DRAKE_ASSERT(ptr_ != nullptr);
+  assert(ptr_ != nullptr);
   return ptr_->Differentiate(x);
 }
 
@@ -513,7 +512,7 @@ Expression& operator/=(Expression& lhs, const Expression& rhs) {
 }
 
 ostream& operator<<(ostream& os, const Expression& e) {
-  DRAKE_ASSERT(e.ptr_ != nullptr);
+  assert(e.ptr_ != nullptr);
   return e.ptr_->Display(os);
 }
 
@@ -836,7 +835,7 @@ Expression operator-(const Variable& var) { return -Expression{var}; }
 
 MatrixX<Expression> Jacobian(const Eigen::Ref<const VectorX<Expression>>& f,
                              const vector<Variable>& vars) {
-  DRAKE_ASSERT(!vars.empty());
+  assert(!vars.empty());
   const Eigen::Ref<const VectorX<Expression>>::Index n{f.size()};
   const size_t m{vars.size()};
   MatrixX<Expression> J(n, m);

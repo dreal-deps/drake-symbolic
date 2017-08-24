@@ -3,8 +3,7 @@
 #include <stdexcept>
 #include <utility>
 
-#include "drake/common/drake_assert.h"
-#include "drake/common/symbolic_expression.h"
+#include "symbolic/symbolic_expression.h"
 
 namespace drake {
 namespace symbolic {
@@ -17,12 +16,12 @@ namespace symbolic {
 /// @throws std::runtime_error if NaN is detected during a visit.
 ///
 /// See the implementation of @c DegreeVisitor class and @c Degree function in
-/// drake/common/monomial.cc as an example usage.
+/// symbolic/monomial.cc as an example usage.
 ///
 /// @pre e.is_polynomial() is true.
 template <typename Result, typename Visitor, typename... Args>
 Result VisitPolynomial(Visitor* v, const Expression& e, Args&&... args) {
-  DRAKE_ASSERT(e.is_polynomial());
+  assert(e.is_polynomial());
   switch (e.get_kind()) {
     case ExpressionKind::Constant:
       return v->VisitConstant(e, std::forward<Args>(args)...);
@@ -65,11 +64,11 @@ Result VisitPolynomial(Visitor* v, const Expression& e, Args&&... args) {
     case ExpressionKind::UninterpretedFunction:
       // Should not be reachable because of `DRAKE_ASSERT(e.is_polynomial())` at
       // the top.
-      DRAKE_ABORT();
+      throw std::runtime_error("Should not be reachable.");
   }
   // Should not be reachable. But we need the following to avoid "control
   // reaches end of non-void function" gcc-warning.
-  DRAKE_ABORT();
+  throw std::runtime_error("Should not be reachable.");
 }
 
 /// Calls visitor object @p v with a symbolic-expression @p e, and arguments @p
@@ -161,7 +160,7 @@ Result VisitExpression(Visitor* v, const Expression& e, Args&&... args) {
   }
   // Should not be reachable. But we need the following to avoid "control
   // reaches end of non-void function" gcc-warning.
-  DRAKE_ABORT();
+  throw std::runtime_error("Should not be reachable.");
 }
 
 }  // namespace symbolic
