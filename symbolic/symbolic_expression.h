@@ -12,9 +12,6 @@
 #include <utility>
 #include <vector>
 
-#include <Eigen/Core>
-
-#include "symbolic/eigen_types.h"
 #include "symbolic/hash.h"
 #include "symbolic/symbolic_environment.h"
 #include "symbolic/symbolic_variable.h"
@@ -162,7 +159,6 @@ symbolic::Formula instead of bool. Those operations are declared in
 symbolic_formula.h file. To check structural equality between two expressions a
 separate function, Expression::EqualTo, is provided.
 
-symbolic::Expression can be used as a scalar type of Eigen types.
 */
 class Expression {
  public:
@@ -625,32 +621,6 @@ get_base_to_exponent_map_in_multiplication(const Expression& e);
  */
 const std::string& get_uninterpreted_function_name(const Expression& e);
 
-// Matrix<Expression> * Matrix<double> => Matrix<Expression>
-template <typename MatrixL, typename MatrixR>
-typename std::enable_if<
-    std::is_base_of<Eigen::MatrixBase<MatrixL>, MatrixL>::value &&
-        std::is_base_of<Eigen::MatrixBase<MatrixR>, MatrixR>::value &&
-        std::is_same<typename MatrixL::Scalar, Expression>::value &&
-        std::is_same<typename MatrixR::Scalar, double>::value,
-    Eigen::Matrix<Expression, MatrixL::RowsAtCompileTime,
-                  MatrixR::ColsAtCompileTime>>::type
-operator*(const MatrixL& lhs, const MatrixR& rhs) {
-  return lhs.template cast<Expression>() * rhs.template cast<Expression>();
-}
-
-// Matrix<double> * Matrix<Expression> => Matrix<Expression>
-template <typename MatrixL, typename MatrixR>
-typename std::enable_if<
-    std::is_base_of<Eigen::MatrixBase<MatrixL>, MatrixL>::value &&
-        std::is_base_of<Eigen::MatrixBase<MatrixR>, MatrixR>::value &&
-        std::is_same<typename MatrixL::Scalar, double>::value &&
-        std::is_same<typename MatrixR::Scalar, Expression>::value,
-    Eigen::Matrix<Expression, MatrixL::RowsAtCompileTime,
-                  MatrixR::ColsAtCompileTime>>::type
-operator*(const MatrixL& lhs, const MatrixR& rhs) {
-  return lhs.template cast<Expression>() * rhs.template cast<Expression>();
-}
-
 // NOLINTNEXTLINE(runtime/references) per C++ standard signature.
 Expression& operator+=(Expression& lhs, const Variable& rhs);
 Expression operator+(const Variable& lhs, const Variable& rhs);
@@ -678,70 +648,7 @@ Expression operator/(const Variable& lhs, const Expression& rhs);
 Expression operator+(const Variable& var);
 Expression operator-(const Variable& var);
 
-// Matrix<Expression> * Matrix<Variable> => Matrix<Expression>
-template <typename MatrixL, typename MatrixR>
-typename std::enable_if<
-    std::is_base_of<Eigen::MatrixBase<MatrixL>, MatrixL>::value &&
-        std::is_base_of<Eigen::MatrixBase<MatrixR>, MatrixR>::value &&
-        std::is_same<typename MatrixL::Scalar, Expression>::value &&
-        std::is_same<typename MatrixR::Scalar, Variable>::value,
-    Eigen::Matrix<Expression, MatrixL::RowsAtCompileTime,
-                  MatrixR::ColsAtCompileTime>>::type
-operator*(const MatrixL& lhs, const MatrixR& rhs) {
-  return lhs * rhs.template cast<Expression>();
-}
-
-// Matrix<Variable> * Matrix<Expression> => Matrix<Expression>
-template <typename MatrixL, typename MatrixR>
-typename std::enable_if<
-    std::is_base_of<Eigen::MatrixBase<MatrixL>, MatrixL>::value &&
-        std::is_base_of<Eigen::MatrixBase<MatrixR>, MatrixR>::value &&
-        std::is_same<typename MatrixL::Scalar, Variable>::value &&
-        std::is_same<typename MatrixR::Scalar, Expression>::value,
-    Eigen::Matrix<Expression, MatrixL::RowsAtCompileTime,
-                  MatrixR::ColsAtCompileTime>>::type
-operator*(const MatrixL& lhs, const MatrixR& rhs) {
-  return lhs.template cast<Expression>() * rhs;
-}
-
-// Matrix<Variable> * Matrix<double> => Matrix<Expression>
-template <typename MatrixL, typename MatrixR>
-typename std::enable_if<
-    std::is_base_of<Eigen::MatrixBase<MatrixL>, MatrixL>::value &&
-        std::is_base_of<Eigen::MatrixBase<MatrixR>, MatrixR>::value &&
-        std::is_same<typename MatrixL::Scalar, Variable>::value &&
-        std::is_same<typename MatrixR::Scalar, double>::value,
-    Eigen::Matrix<Expression, MatrixL::RowsAtCompileTime,
-                  MatrixR::ColsAtCompileTime>>::type
-operator*(const MatrixL& lhs, const MatrixR& rhs) {
-  return lhs.template cast<Expression>() * rhs.template cast<Expression>();
-}
-
-// Matrix<double> * Matrix<Variable> => Matrix<Expression>
-template <typename MatrixL, typename MatrixR>
-typename std::enable_if<
-    std::is_base_of<Eigen::MatrixBase<MatrixL>, MatrixL>::value &&
-        std::is_base_of<Eigen::MatrixBase<MatrixR>, MatrixR>::value &&
-        std::is_same<typename MatrixL::Scalar, double>::value &&
-        std::is_same<typename MatrixR::Scalar, Variable>::value,
-    Eigen::Matrix<Expression, MatrixL::RowsAtCompileTime,
-                  MatrixR::ColsAtCompileTime>>::type
-operator*(const MatrixL& lhs, const MatrixR& rhs) {
-  return lhs.template cast<Expression>() * rhs.template cast<Expression>();
-}
-
 }  // namespace symbolic
-
-/** Provides specialization of @c cond function defined in symbolic/cond.h
- * file. This specialization is required to handle @c double to @c
- * symbolic::Expression conversion so that we can write one such as <tt>cond(x >
- * 0.0, 1.0, -1.0)</tt>.
- */
-template <typename... Rest>
-symbolic::Expression cond(const symbolic::Formula& f_cond, double v_then,
-                          Rest... rest) {
-  return if_then_else(f_cond, symbolic::Expression{v_then}, cond(rest...));
-}
 
 /** Computes the hash value of a symbolic expression. */
 template <>
@@ -774,119 +681,3 @@ struct equal_to<dreal::drake::symbolic::Expression> {
 };
 
 }  // namespace std
-
-#if !defined(DRAKE_DOXYGEN_CXX)
-// Define Eigen traits needed for Matrix<dreal::drake::symbolic::Expression>.
-namespace Eigen {
-// Eigen scalar type traits for Matrix<dreal::drake::symbolic::Expression>.
-template <>
-struct NumTraits<dreal::drake::symbolic::Expression>
-    : GenericNumTraits<dreal::drake::symbolic::Expression> {
-  static inline int digits10() { return 0; }
-};
-
-// Informs Eigen that Variable op Variable gets Expression.
-template <typename BinaryOp>
-struct ScalarBinaryOpTraits<dreal::drake::symbolic::Variable,
-                            dreal::drake::symbolic::Variable, BinaryOp> {
-  enum { Defined = 1 };
-  typedef dreal::drake::symbolic::Expression ReturnType;
-};
-
-// Informs Eigen that Variable op Expression gets Expression.
-template <typename BinaryOp>
-struct ScalarBinaryOpTraits<dreal::drake::symbolic::Variable,
-                            dreal::drake::symbolic::Expression, BinaryOp> {
-  enum { Defined = 1 };
-  typedef dreal::drake::symbolic::Expression ReturnType;
-};
-
-// Informs Eigen that Expression op Variable gets Expression.
-template <typename BinaryOp>
-struct ScalarBinaryOpTraits<dreal::drake::symbolic::Expression,
-                            dreal::drake::symbolic::Variable, BinaryOp> {
-  enum { Defined = 1 };
-  typedef dreal::drake::symbolic::Expression ReturnType;
-};
-
-// Informs Eigen that Variable op double gets Expression.
-template <typename BinaryOp>
-struct ScalarBinaryOpTraits<dreal::drake::symbolic::Variable, double,
-                            BinaryOp> {
-  enum { Defined = 1 };
-  typedef dreal::drake::symbolic::Expression ReturnType;
-};
-
-// Informs Eigen that double op Variable gets Expression.
-template <typename BinaryOp>
-struct ScalarBinaryOpTraits<double, dreal::drake::symbolic::Variable,
-                            BinaryOp> {
-  enum { Defined = 1 };
-  typedef dreal::drake::symbolic::Expression ReturnType;
-};
-
-// Informs Eigen that Expression op double gets Expression.
-template <typename BinaryOp>
-struct ScalarBinaryOpTraits<dreal::drake::symbolic::Expression, double,
-                            BinaryOp> {
-  enum { Defined = 1 };
-  typedef dreal::drake::symbolic::Expression ReturnType;
-};
-
-// Informs Eigen that double op Expression gets Expression.
-template <typename BinaryOp>
-struct ScalarBinaryOpTraits<double, dreal::drake::symbolic::Expression,
-                            BinaryOp> {
-  enum { Defined = 1 };
-  typedef dreal::drake::symbolic::Expression ReturnType;
-};
-
-}  // namespace Eigen
-#endif  // !defined(DRAKE_DOXYGEN_CXX)
-
-namespace dreal {
-namespace drake {
-namespace symbolic {
-/// Computes the Jacobian matrix J of the vector function @p f with respect to
-/// @p vars. J(i,j) contains ∂f(i)/∂vars(j).
-///
-///  For example, Jacobian([x * cos(y), x * sin(y), x^2], {x, y}) returns the
-///  following 3x2 matrix:
-///  <pre>
-///  = |cos(y)   -x * sin(y)|
-///    |sin(y)    x * cos(y)|
-///    | 2 * x             0|
-///  </pre>
-///
-/// @pre {@p vars is non-empty}.
-MatrixX<Expression> Jacobian(const Eigen::Ref<const VectorX<Expression>>& f,
-                             const std::vector<Variable>& vars);
-
-/// Computes the Jacobian matrix J of the vector function @p f with respect to
-/// @p vars. J(i,j) contains ∂f(i)/∂vars(j).
-///
-/// @pre {@p vars is non-empty}.
-MatrixX<Expression> Jacobian(const Eigen::Ref<const VectorX<Expression>>& f,
-                             const Eigen::Ref<const VectorX<Variable>>& vars);
-
-/// Checks if two Eigen::Matrix<Expression> @p m1 and @p m2 are structurally
-/// equal. That is, it returns true if and only if `m1(i, j)` is structurally
-/// equal to `m2(i, j)` for all `i`, `j`.
-template <typename DerivedA, typename DerivedB>
-typename std::enable_if<
-    std::is_base_of<Eigen::MatrixBase<DerivedA>, DerivedA>::value &&
-        std::is_base_of<Eigen::MatrixBase<DerivedB>, DerivedB>::value &&
-        std::is_same<typename DerivedA::Scalar, Expression>::value &&
-        std::is_same<typename DerivedB::Scalar, Expression>::value,
-    bool>::type
-CheckStructuralEquality(const DerivedA& m1, const DerivedB& m2) {
-  EIGEN_STATIC_ASSERT_SAME_MATRIX_SIZE(DerivedA, DerivedB);
-  assert(m1.rows() == m2.rows() && m1.cols() == m2.cols());
-  // Note that std::equal_to<Expression> calls Expression::EqualTo which checks
-  // structural equality between two expressions.
-  return m1.binaryExpr(m2, std::equal_to<Expression>{}).all();
-}
-
-}  // namespace symbolic
-}  // namespace drake
-}  // namespace dreal

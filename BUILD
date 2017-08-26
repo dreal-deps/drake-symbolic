@@ -4,7 +4,6 @@
 cc_library(
     name = "drake_symbolic",
     srcs = [
-        "symbolic/eigen_types.h",
         "symbolic/never_destroyed.h",
         "symbolic/symbolic_environment.cc",
         "symbolic/symbolic_expression.cc",
@@ -30,7 +29,4 @@ cc_library(
         "symbolic/test/symbolic_test_util.h",
     ],
     visibility = ["//visibility:public"],
-    deps = [
-        "@eigen",
-    ],
 )

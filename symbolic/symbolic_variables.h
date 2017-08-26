@@ -7,7 +7,6 @@
 #include <set>
 #include <string>
 
-#include "symbolic/eigen_types.h"
 #include "symbolic/symbolic_variable.h"
 
 namespace dreal {
@@ -42,9 +41,6 @@ class Variables {
 
   /** List constructor. */
   Variables(std::initializer_list<Variable> init);
-
-  /** Constructs from an Eigen vector of variables. */
-  explicit Variables(const Eigen::Ref<const VectorX<Variable>>& init);
 
   /** Returns hash value. */
   size_t get_hash() const;

@@ -1,6 +1,7 @@
 #include "symbolic/symbolic_expression_cell.h"
 
 #include <algorithm>
+#include <cassert>
 #include <cmath>
 #include <functional>
 #include <iomanip>

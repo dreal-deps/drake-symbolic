@@ -1,6 +1,7 @@
 #include "symbolic/symbolic_variable.h"
 
 #include <atomic>
+#include <cassert>
 #include <iostream>
 #include <memory>
 #include <sstream>

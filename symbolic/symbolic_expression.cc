@@ -1,15 +1,15 @@
 #include "symbolic/symbolic_expression.h"
 
 #include <algorithm>
+#include <cassert>
 #include <cmath>
 #include <cstddef>
 #include <map>
 #include <memory>
+#include <sstream>
 #include <stdexcept>
 #include <string>
 #include <vector>
-
-#include <Eigen/Core>
 
 #include "symbolic/never_destroyed.h"
 #include "symbolic/symbolic_environment.h"
@@ -834,24 +834,6 @@ Expression operator/(const Variable& lhs, const Expression& rhs) {
 Expression operator+(const Variable& var) { return Expression{var}; }
 Expression operator-(const Variable& var) { return -Expression{var}; }
 
-MatrixX<Expression> Jacobian(const Eigen::Ref<const VectorX<Expression>>& f,
-                             const vector<Variable>& vars) {
-  assert(!vars.empty());
-  const Eigen::Ref<const VectorX<Expression>>::Index n{f.size()};
-  const size_t m{vars.size()};
-  MatrixX<Expression> J(n, m);
-  for (int i = 0; i < n; ++i) {
-    for (size_t j = 0; j < m; ++j) {
-      J(i, j) = f[i].Differentiate(vars[j]);
-    }
-  }
-  return J;
-}
-
-MatrixX<Expression> Jacobian(const Eigen::Ref<const VectorX<Expression>>& f,
-                             const Eigen::Ref<const VectorX<Variable>>& vars) {
-  return Jacobian(f, vector<Variable>(vars.data(), vars.data() + vars.size()));
-}
 }  // namespace symbolic
 }  // namespace drake
 }  // namespace dreal

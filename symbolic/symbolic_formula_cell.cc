@@ -1,6 +1,7 @@
 #include "symbolic/symbolic_formula_cell.h"
 
 #include <algorithm>
+#include <cassert>
 #include <iostream>
 #include <memory>
 #include <set>
@@ -16,26 +17,6 @@
 
 namespace dreal {
 namespace drake {
-namespace math {
-/// Determines if a matrix is symmetric. If std::equal_to<>()(matrix(i, j),
-/// matrix(j, i)) is true for all i, j, then the matrix is symmetric.
-template <typename Derived>
-bool IsSymmetric(const Eigen::MatrixBase<Derived>& matrix) {
-  using DerivedScalar = typename Derived::Scalar;
-  if (matrix.rows() != matrix.cols()) {
-    return false;
-  }
-  for (int i = 0; i < static_cast<int>(matrix.rows()); ++i) {
-    for (int j = i + 1; j < static_cast<int>(matrix.cols()); ++j) {
-      if (!std::equal_to<DerivedScalar>()(matrix(i, j), matrix(j, i))) {
-        return false;
-      }
-    }
-  }
-  return true;
-}
-}  // namespace math
-
 namespace symbolic {
 
 using std::equal;

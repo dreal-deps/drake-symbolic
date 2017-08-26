@@ -7,8 +7,6 @@
 #include <ostream>
 #include <string>
 
-#include <Eigen/Core>
-
 #include "symbolic/symbolic_environment.h"
 #include "symbolic/symbolic_expression.h"
 #include "symbolic/symbolic_formula.h"

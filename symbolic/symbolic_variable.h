@@ -6,8 +6,6 @@
 #include <ostream>
 #include <string>
 
-#include <Eigen/Core>
-
 #include "symbolic/hash.h"
 
 namespace dreal {
@@ -113,36 +111,3 @@ struct equal_to<dreal::drake::symbolic::Variable> {
   }
 };
 }  // namespace std
-
-#if !defined(DRAKE_DOXYGEN_CXX)
-namespace Eigen {
-// Eigen scalar type traits for Matrix<dreal::drake::symbolic::Variable>.
-template <>
-struct NumTraits<dreal::drake::symbolic::Variable>
-    : GenericNumTraits<dreal::drake::symbolic::Variable> {
-  static inline int digits10() { return 0; }
-};
-}  // namespace Eigen
-#endif  // !defined(DRAKE_DOXYGEN_CXX)
-
-namespace dreal {
-namespace drake {
-namespace symbolic {
-/// Checks if two Eigen::Matrix<Variable> @p m1 and @p m2 are structurally
-/// equal. That is, it returns true if and only if `m1(i, j)` is structurally
-/// equal to `m2(i, j)` for all `i`, `j`.
-template <typename DerivedA, typename DerivedB>
-typename std::enable_if<
-    std::is_base_of<Eigen::MatrixBase<DerivedA>, DerivedA>::value &&
-        std::is_base_of<Eigen::MatrixBase<DerivedB>, DerivedB>::value &&
-        std::is_same<typename DerivedA::Scalar, Variable>::value &&
-        std::is_same<typename DerivedB::Scalar, Variable>::value,
-    bool>::type
-CheckStructuralEquality(const DerivedA& m1, const DerivedB& m2) {
-  EIGEN_STATIC_ASSERT_SAME_MATRIX_SIZE(DerivedA, DerivedB);
-  assert(m1.rows() == m2.rows() && m1.cols() == m2.cols());
-  return m1.binaryExpr(m2, std::equal_to<Variable>{}).all();
-}
-}  // namespace symbolic
-}  // namespace drake
-}  // namespace dreal
