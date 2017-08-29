@@ -1,6 +1,23 @@
 # -*- python -*-
 # This file contains rules for Bazel; see https://bazel.io/ .
 
+# Headers to expose.
+filegroup(
+    name = "headers",
+    srcs = [
+        "symbolic/hash.h",
+        "symbolic/symbolic_environment.h",
+        "symbolic/symbolic_expression.h",
+        "symbolic/symbolic_expression_visitor.h",
+        "symbolic/symbolic_formula.h",
+        "symbolic/symbolic_formula_visitor.h",
+        "symbolic/symbolic_variable.h",
+        "symbolic/symbolic_variables.h",
+        "symbolic/test/symbolic_test_util.h",
+    ],
+    visibility = ["//visibility:public"],
+)
+
 cc_library(
     name = "drake_symbolic",
     srcs = [
