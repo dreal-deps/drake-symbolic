@@ -1,4 +1,4 @@
-#include "symbolic/symbolic_variables.h"
+#include "dreal/symbolic/symbolic_variables.h"
 
 #include <algorithm>
 #include <functional>
@@ -9,7 +9,7 @@
 #include <string>
 #include <utility>
 
-#include "symbolic/hash.h"
+#include "dreal/symbolic/hash.h"
 
 using std::accumulate;
 using std::includes;

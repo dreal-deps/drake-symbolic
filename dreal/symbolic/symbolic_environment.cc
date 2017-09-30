@@ -1,4 +1,4 @@
-#include "symbolic/symbolic_environment.h"
+#include "dreal/symbolic/symbolic_environment.h"
 
 #include <cmath>
 #include <initializer_list>

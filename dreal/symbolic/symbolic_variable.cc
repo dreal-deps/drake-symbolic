@@ -1,4 +1,4 @@
-#include "symbolic/symbolic_variable.h"
+#include "dreal/symbolic/symbolic_variable.h"
 
 #include <atomic>
 #include <cassert>
@@ -8,7 +8,7 @@
 #include <string>
 #include <utility>
 
-#include "symbolic/never_destroyed.h"
+#include "dreal/symbolic/never_destroyed.h"
 
 using std::atomic;
 using std::make_shared;

@@ -3,9 +3,9 @@
 
 #include <gtest/gtest.h>
 
-#include "symbolic/symbolic_expression.h"
-#include "symbolic/symbolic_formula.h"
-#include "symbolic/symbolic_variable.h"
+#include "dreal/symbolic/symbolic_expression.h"
+#include "dreal/symbolic/symbolic_formula.h"
+#include "dreal/symbolic/symbolic_variable.h"
 
 namespace dreal {
 namespace drake {

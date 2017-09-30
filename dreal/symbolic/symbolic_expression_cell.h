@@ -7,11 +7,11 @@
 #include <ostream>
 #include <string>
 
-#include "symbolic/symbolic_environment.h"
-#include "symbolic/symbolic_expression.h"
-#include "symbolic/symbolic_formula.h"
-#include "symbolic/symbolic_variable.h"
-#include "symbolic/symbolic_variables.h"
+#include "dreal/symbolic/symbolic_environment.h"
+#include "dreal/symbolic/symbolic_expression.h"
+#include "dreal/symbolic/symbolic_formula.h"
+#include "dreal/symbolic/symbolic_variable.h"
+#include "dreal/symbolic/symbolic_variables.h"
 
 namespace dreal {
 namespace drake {

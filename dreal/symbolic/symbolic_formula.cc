@@ -1,4 +1,4 @@
-#include "symbolic/symbolic_formula.h"
+#include "dreal/symbolic/symbolic_formula.h"
 
 #include <cassert>
 #include <cstddef>
@@ -7,11 +7,11 @@
 #include <set>
 #include <sstream>
 
-#include "symbolic/symbolic_environment.h"
-#include "symbolic/symbolic_expression.h"
-#include "symbolic/symbolic_formula_cell.h"
-#include "symbolic/symbolic_variable.h"
-#include "symbolic/symbolic_variables.h"
+#include "dreal/symbolic/symbolic_environment.h"
+#include "dreal/symbolic/symbolic_expression.h"
+#include "dreal/symbolic/symbolic_formula_cell.h"
+#include "dreal/symbolic/symbolic_variable.h"
+#include "dreal/symbolic/symbolic_variables.h"
 
 namespace dreal {
 namespace drake {

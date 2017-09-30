@@ -1,4 +1,4 @@
-#include "symbolic/symbolic_expression.h"
+#include "dreal/symbolic/symbolic_expression.h"
 
 #include <algorithm>
 #include <cassert>
@@ -11,12 +11,12 @@
 #include <string>
 #include <vector>
 
-#include "symbolic/never_destroyed.h"
-#include "symbolic/symbolic_environment.h"
-#include "symbolic/symbolic_expression_cell.h"
-#include "symbolic/symbolic_formula.h"
-#include "symbolic/symbolic_variable.h"
-#include "symbolic/symbolic_variables.h"
+#include "dreal/symbolic/never_destroyed.h"
+#include "dreal/symbolic/symbolic_environment.h"
+#include "dreal/symbolic/symbolic_expression_cell.h"
+#include "dreal/symbolic/symbolic_formula.h"
+#include "dreal/symbolic/symbolic_variable.h"
+#include "dreal/symbolic/symbolic_variables.h"
 
 namespace dreal {
 namespace drake {
