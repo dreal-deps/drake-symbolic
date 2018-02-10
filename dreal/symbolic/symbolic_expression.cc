@@ -783,6 +783,18 @@ const map<Expression, Expression>& get_base_to_exponent_map_in_multiplication(
   return to_multiplication(e)->get_base_to_exponent_map();
 }
 
+const Formula& get_conditional_formula(const Expression& e) {
+  return to_if_then_else(e)->get_conditional_formula();
+}
+
+const Expression& get_then_expression(const Expression& e) {
+  return to_if_then_else(e)->get_then_expression();
+}
+
+const Expression& get_else_expression(const Expression& e) {
+  return to_if_then_else(e)->get_then_expression();
+}
+
 const string& get_uninterpreted_function_name(const Expression& e) {
   return to_uninterpreted_function(e)->get_name();
 }
