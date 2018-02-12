@@ -792,7 +792,7 @@ const Expression& get_then_expression(const Expression& e) {
 }
 
 const Expression& get_else_expression(const Expression& e) {
-  return to_if_then_else(e)->get_then_expression();
+  return to_if_then_else(e)->get_else_expression();
 }
 
 const string& get_uninterpreted_function_name(const Expression& e) {
