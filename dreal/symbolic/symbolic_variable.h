@@ -43,11 +43,17 @@ class Variable {
   Variable()
       : id_{0},
         type_{Type::CONTINUOUS},
+        is_model_variable_{true},
         name_{std::make_shared<std::string>()} {}
 
-  /** Constructs a variable with a string. If not specified, it has CONTINUOUS
-   * type by default.*/
-  explicit Variable(std::string name, Type type = Type::CONTINUOUS);
+  /** Constructs a variable with a name @p name. If @p type is not
+   * specified, it has CONTINUOUS type by default. By default, a
+   * variable is a model variable. Non-model variables represent
+   * variables introduced by a solver (i.e. pre-processing). While
+   * model variables are the ones provided by a user. By default, a
+   * variable is a model variable. */
+  explicit Variable(std::string name, Type type = Type::CONTINUOUS,
+                    bool model_variable = true);
 
   /** Checks if this is a dummy variable (ID = 0) which is created by
    *  the default constructor. */
@@ -57,6 +63,7 @@ class Variable {
   size_t get_hash() const { return std::hash<Id>{}(id_); }
   std::string get_name() const;
   std::string to_string() const;
+  bool is_model_variable() const;
 
   /// Checks the equality of two variables based on their ID values.
   bool equal_to(const Variable& v) const { return get_id() == v.get_id(); }
@@ -71,6 +78,7 @@ class Variable {
   static Id get_next_id();
   Id id_{};  // Unique identifier.
   Type type_{Type::CONTINUOUS};
+  bool is_model_variable_{true};
 
   // Variable class has shared_ptr<string> instead of string to be
   // drake::test::IsMemcpyMovable.

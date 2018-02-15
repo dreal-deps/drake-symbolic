@@ -29,8 +29,11 @@ Variable::Id Variable::get_next_id() {
   return next_id.access()++;
 }
 
-Variable::Variable(string name, const Type type)
-    : id_{get_next_id()}, type_{type}, name_{make_shared<string>(move(name))} {
+Variable::Variable(string name, const Type type, const bool is_model_variable)
+    : id_{get_next_id()},
+      type_{type},
+      is_model_variable_{is_model_variable},
+      name_{make_shared<string>(move(name))} {
   assert(id_ > 0);
 }
 Variable::Id Variable::get_id() const { return id_; }
@@ -41,6 +44,7 @@ string Variable::to_string() const {
   oss << *this;
   return oss.str();
 }
+bool Variable::is_model_variable() const { return is_model_variable_; }
 
 ostream& operator<<(ostream& os, const Variable& var) {
   os << var.get_name();
