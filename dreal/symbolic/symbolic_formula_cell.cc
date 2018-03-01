@@ -577,137 +577,153 @@ bool is_forall(const FormulaCell& f) {
   return f.get_kind() == FormulaKind::Forall;
 }
 
-shared_ptr<FormulaFalse> to_false(const shared_ptr<FormulaCell>& f_ptr) {
+shared_ptr<const FormulaFalse> to_false(
+    const shared_ptr<const FormulaCell>& f_ptr) {
   assert(is_false(*f_ptr));
-  return static_pointer_cast<FormulaFalse>(f_ptr);
+  return static_pointer_cast<const FormulaFalse>(f_ptr);
 }
 
-shared_ptr<FormulaFalse> to_false(const Formula& f) { return to_false(f.ptr_); }
+shared_ptr<const FormulaFalse> to_false(const Formula& f) {
+  return to_false(f.ptr_);
+}
 
-shared_ptr<FormulaTrue> to_true(const shared_ptr<FormulaCell>& f_ptr) {
+shared_ptr<const FormulaTrue> to_true(
+    const shared_ptr<const FormulaCell>& f_ptr) {
   assert(is_true(*f_ptr));
-  return static_pointer_cast<FormulaTrue>(f_ptr);
+  return static_pointer_cast<const FormulaTrue>(f_ptr);
 }
 
-shared_ptr<FormulaTrue> to_true(const Formula& f) { return to_true(f.ptr_); }
+shared_ptr<const FormulaTrue> to_true(const Formula& f) {
+  return to_true(f.ptr_);
+}
 
-shared_ptr<FormulaVar> to_variable(const shared_ptr<FormulaCell>& f_ptr) {
+shared_ptr<const FormulaVar> to_variable(
+    const shared_ptr<const FormulaCell>& f_ptr) {
   assert(is_variable(*f_ptr));
-  return static_pointer_cast<FormulaVar>(f_ptr);
+  return static_pointer_cast<const FormulaVar>(f_ptr);
 }
 
-shared_ptr<FormulaVar> to_variable(const Formula& f) {
+shared_ptr<const FormulaVar> to_variable(const Formula& f) {
   return to_variable(f.ptr_);
 }
 
-shared_ptr<RelationalFormulaCell> to_relational(
-    const shared_ptr<FormulaCell>& f_ptr) {
+shared_ptr<const RelationalFormulaCell> to_relational(
+    const shared_ptr<const FormulaCell>& f_ptr) {
   assert(is_relational(*f_ptr));
-  return static_pointer_cast<RelationalFormulaCell>(f_ptr);
+  return static_pointer_cast<const RelationalFormulaCell>(f_ptr);
 }
 
-shared_ptr<RelationalFormulaCell> to_relational(const Formula& f) {
+shared_ptr<const RelationalFormulaCell> to_relational(const Formula& f) {
   return to_relational(f.ptr_);
 }
 
-shared_ptr<FormulaEq> to_equal_to(const shared_ptr<FormulaCell>& f_ptr) {
+shared_ptr<const FormulaEq> to_equal_to(
+    const shared_ptr<const FormulaCell>& f_ptr) {
   assert(is_equal_to(*f_ptr));
-  return static_pointer_cast<FormulaEq>(f_ptr);
+  return static_pointer_cast<const FormulaEq>(f_ptr);
 }
 
-shared_ptr<FormulaEq> to_equal_to(const Formula& f) {
+shared_ptr<const FormulaEq> to_equal_to(const Formula& f) {
   return to_equal_to(f.ptr_);
 }
 
-shared_ptr<FormulaNeq> to_not_equal_to(const shared_ptr<FormulaCell>& f_ptr) {
+shared_ptr<const FormulaNeq> to_not_equal_to(
+    const shared_ptr<const FormulaCell>& f_ptr) {
   assert(is_not_equal_to(*f_ptr));
-  return static_pointer_cast<FormulaNeq>(f_ptr);
+  return static_pointer_cast<const FormulaNeq>(f_ptr);
 }
 
-shared_ptr<FormulaNeq> to_not_equal_to(const Formula& f) {
+shared_ptr<const FormulaNeq> to_not_equal_to(const Formula& f) {
   return to_not_equal_to(f.ptr_);
 }
 
-shared_ptr<FormulaGt> to_greater_than(const shared_ptr<FormulaCell>& f_ptr) {
+shared_ptr<const FormulaGt> to_greater_than(
+    const shared_ptr<const FormulaCell>& f_ptr) {
   assert(is_greater_than(*f_ptr));
-  return static_pointer_cast<FormulaGt>(f_ptr);
+  return static_pointer_cast<const FormulaGt>(f_ptr);
 }
 
-shared_ptr<FormulaGt> to_greater_than(const Formula& f) {
+shared_ptr<const FormulaGt> to_greater_than(const Formula& f) {
   return to_greater_than(f.ptr_);
 }
 
-shared_ptr<FormulaGeq> to_greater_than_or_equal_to(
-    const shared_ptr<FormulaCell>& f_ptr) {
+shared_ptr<const FormulaGeq> to_greater_than_or_equal_to(
+    const shared_ptr<const FormulaCell>& f_ptr) {
   assert(is_greater_than_or_equal_to(*f_ptr));
-  return static_pointer_cast<FormulaGeq>(f_ptr);
+  return static_pointer_cast<const FormulaGeq>(f_ptr);
 }
 
-shared_ptr<FormulaGeq> to_greater_than_or_equal_to(const Formula& f) {
+shared_ptr<const FormulaGeq> to_greater_than_or_equal_to(const Formula& f) {
   return to_greater_than_or_equal_to(f.ptr_);
 }
 
-shared_ptr<FormulaLt> to_less_than(const shared_ptr<FormulaCell>& f_ptr) {
+shared_ptr<const FormulaLt> to_less_than(
+    const shared_ptr<const FormulaCell>& f_ptr) {
   assert(is_less_than(*f_ptr));
-  return static_pointer_cast<FormulaLt>(f_ptr);
+  return static_pointer_cast<const FormulaLt>(f_ptr);
 }
 
-shared_ptr<FormulaLt> to_less_than(const Formula& f) {
+shared_ptr<const FormulaLt> to_less_than(const Formula& f) {
   return to_less_than(f.ptr_);
 }
 
-shared_ptr<FormulaLeq> to_less_than_or_equal_to(
-    const shared_ptr<FormulaCell>& f_ptr) {
+shared_ptr<const FormulaLeq> to_less_than_or_equal_to(
+    const shared_ptr<const FormulaCell>& f_ptr) {
   assert(is_less_than_or_equal_to(*f_ptr));
-  return static_pointer_cast<FormulaLeq>(f_ptr);
+  return static_pointer_cast<const FormulaLeq>(f_ptr);
 }
 
-shared_ptr<FormulaLeq> to_less_than_or_equal_to(const Formula& f) {
+shared_ptr<const FormulaLeq> to_less_than_or_equal_to(const Formula& f) {
   return to_less_than_or_equal_to(f.ptr_);
 }
 
-shared_ptr<NaryFormulaCell> to_nary(const shared_ptr<FormulaCell>& f_ptr) {
+shared_ptr<const NaryFormulaCell> to_nary(
+    const shared_ptr<const FormulaCell>& f_ptr) {
   assert(is_nary(*f_ptr));
-  return static_pointer_cast<NaryFormulaCell>(f_ptr);
+  return static_pointer_cast<const NaryFormulaCell>(f_ptr);
 }
 
-shared_ptr<NaryFormulaCell> to_nary(const Formula& f) {
+shared_ptr<const NaryFormulaCell> to_nary(const Formula& f) {
   return to_nary(f.ptr_);
 }
 
-shared_ptr<FormulaAnd> to_conjunction(const shared_ptr<FormulaCell>& f_ptr) {
+shared_ptr<const FormulaAnd> to_conjunction(
+    const shared_ptr<const FormulaCell>& f_ptr) {
   assert(is_conjunction(*f_ptr));
-  return static_pointer_cast<FormulaAnd>(f_ptr);
+  return static_pointer_cast<const FormulaAnd>(f_ptr);
 }
 
-shared_ptr<FormulaAnd> to_conjunction(const Formula& f) {
+shared_ptr<const FormulaAnd> to_conjunction(const Formula& f) {
   return to_conjunction(f.ptr_);
 }
 
-shared_ptr<FormulaOr> to_disjunction(const shared_ptr<FormulaCell>& f_ptr) {
+shared_ptr<const FormulaOr> to_disjunction(
+    const shared_ptr<const FormulaCell>& f_ptr) {
   assert(is_disjunction(*f_ptr));
-  return static_pointer_cast<FormulaOr>(f_ptr);
+  return static_pointer_cast<const FormulaOr>(f_ptr);
 }
 
-shared_ptr<FormulaOr> to_disjunction(const Formula& f) {
+shared_ptr<const FormulaOr> to_disjunction(const Formula& f) {
   return to_disjunction(f.ptr_);
 }
 
-shared_ptr<FormulaNot> to_negation(const shared_ptr<FormulaCell>& f_ptr) {
+shared_ptr<const FormulaNot> to_negation(
+    const shared_ptr<const FormulaCell>& f_ptr) {
   assert(is_negation(*f_ptr));
-  return static_pointer_cast<FormulaNot>(f_ptr);
+  return static_pointer_cast<const FormulaNot>(f_ptr);
 }
 
-shared_ptr<FormulaNot> to_negation(const Formula& f) {
+shared_ptr<const FormulaNot> to_negation(const Formula& f) {
   return to_negation(f.ptr_);
 }
 
-shared_ptr<FormulaForall> to_forall(const shared_ptr<FormulaCell>& f_ptr) {
+shared_ptr<const FormulaForall> to_forall(
+    const shared_ptr<const FormulaCell>& f_ptr) {
   assert(is_forall(*f_ptr));
-  return static_pointer_cast<FormulaForall>(f_ptr);
+  return static_pointer_cast<const FormulaForall>(f_ptr);
 }
 
-shared_ptr<FormulaForall> to_forall(const Formula& f) {
+shared_ptr<const FormulaForall> to_forall(const Formula& f) {
   return to_forall(f.ptr_);
 }
 

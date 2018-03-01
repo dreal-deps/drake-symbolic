@@ -43,7 +43,7 @@ namespace {
 // It throws "Incompatible operand types when using ternary conditional
 // operator" error. Related S&O entry:
 // http://stackoverflow.com/questions/29842095/incompatible-operand-types-when-using-ternary-conditional-operator.
-shared_ptr<ExpressionCell> make_cell(const double d) {
+shared_ptr<const ExpressionCell> make_cell(const double d) {
   if (std::isnan(d)) {
     return make_shared<ExpressionNaN>();
   }
@@ -68,7 +68,8 @@ Expression NegateMultiplication(const Expression& e) {
 Expression::Expression(const Variable& var)
     : ptr_{make_shared<ExpressionVar>(var)} {}
 Expression::Expression(const double d) : ptr_{make_cell(d)} {}
-Expression::Expression(shared_ptr<ExpressionCell> ptr) : ptr_{std::move(ptr)} {}
+Expression::Expression(shared_ptr<const ExpressionCell> ptr)
+    : ptr_{std::move(ptr)} {}
 
 ExpressionKind Expression::get_kind() const {
   assert(ptr_ != nullptr);
