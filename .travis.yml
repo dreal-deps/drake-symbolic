@@ -1,0 +1,120 @@
+sudo: required
+dist: trusty
+language: cpp
+
+env:
+  global:
+    - /usr/local/bin:$PATH
+
+cache:
+  directories:
+    - $HOME/.bazel-output-base
+    - $HOME/Library/Caches/Homebrew
+
+matrix:
+  include:
+    - compiler: gcc
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test']
+          packages: ['g++-7']
+      env:
+        - COMPILER="--compiler=gcc-7" BUILD_TYPE="-c dbg"
+    - compiler: gcc
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test']
+          packages: ['g++-6']
+      env:
+        - COMPILER="--compiler=gcc-6" BUILD_TYPE="-c dbg"
+    - compiler: gcc
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test']
+          packages: ['g++-5']
+      env:
+        - COMPILER="--compiler=gcc-5" BUILD_TYPE="-c dbg"
+    - compiler: gcc
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test']
+          packages: ['g++-4.9']
+      env:
+        - COMPILER="--compiler=gcc-4.9" BUILD_TYPE="-c dbg"
+    - compiler: clang
+      addons:
+        apt:
+          sources: ['llvm-toolchain-trusty-5.0', 'ubuntu-toolchain-r-test']
+          packages: ['g++-4.9', 'clang-5.0']
+      env:
+        - COMPILER="--compiler=clang-5.0" BUILD_TYPE="-c dbg"
+    - compiler: clang
+      addons:
+        apt:
+          sources: ['llvm-toolchain-trusty-4.0', 'ubuntu-toolchain-r-test']
+          packages: ['g++-4.9', 'clang-4.0']
+      env:
+        - COMPILER="--compiler=clang-4.0" BUILD_TYPE="-c dbg"
+    - compiler: clang
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test']
+          packages: ['g++-4.9', 'clang-3.9']
+      env:
+        - COMPILER="--compiler=clang-3.9" BUILD_TYPE="-c dbg"
+    - compiler: clang
+      addons:
+        apt:
+          sources: ['llvm-toolchain-trusty-4.0', 'ubuntu-toolchain-r-test']
+          packages: ['g++-4.9', 'clang-4.0']
+      env:
+        - COMPILER="--compiler=clang-4.0" CONFIG="--config asan"
+    - compiler: clang
+      addons:
+        apt:
+          sources: ['llvm-toolchain-trusty-4.0', 'ubuntu-toolchain-r-test']
+          packages: ['g++-4.9', 'clang-4.0']
+      env:
+        - COMPILER="--compiler=clang-4.0" CONFIG="--config lsan"
+    - os: osx
+      osx_image: xcode8.3  # macOS-10.12
+      compiler: clang
+      env:
+        - COMPILER="" BUILD_TYPE="-c opt"
+    - os: osx
+      osx_image: xcode9.3beta  # macOS-10.13
+      compiler: clang
+      env:
+        - COMPILER="" BUILD_TYPE="-c opt"
+
+install:
+  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then
+      sudo apt update;
+      BAZEL_VERSION=0.11.0;
+      wget https://github.com/bazelbuild/bazel/releases/download/${BAZEL_VERSION}/bazel_${BAZEL_VERSION}-linux-x86_64.deb;
+      sudo dpkg -i bazel_${BAZEL_VERSION}-linux-x86_64.deb;
+      BAZEL_LOCAL_RESOURCES=2048,1,1.0;
+    fi
+  - if [ "${TRAVIS_OS_NAME}" == "osx" ]; then
+      brew update;
+      brew install bazel || true;
+      BAZEL_LOCAL_RESOURCES=2048,2,1.0;
+    fi
+
+script:
+  - |
+    bazel \
+      --batch \
+      --output_base="$HOME/.bazel-output-base" \
+      --host_jvm_args=-Xmx500m \
+      --host_jvm_args=-Xms500m \
+      test \
+      --local_resources=${BAZEL_LOCAL_RESOURCES} \
+      //...  ${COMPILER} ${BUILD_TYPE} ${CONFIG}
+
+notifications:
+  recipients:
+    - soonho.kong@gmail.com
+  email:
+    on_success: change
+    on_failure: always
