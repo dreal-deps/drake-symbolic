@@ -250,6 +250,8 @@ class Formula {
   friend std::shared_ptr<const FormulaNot> to_negation(const Formula& f);
   friend std::shared_ptr<const FormulaForall> to_forall(const Formula& f);
 
+  friend FormulaCell;
+
  private:
   std::shared_ptr<const FormulaCell> ptr_;
 };

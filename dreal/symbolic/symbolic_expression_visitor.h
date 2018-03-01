@@ -12,8 +12,9 @@ namespace symbolic {
 
 /// Calls visitor object @p v with a polynomial symbolic-expression @p e, and
 /// arguments @p args. Visitor object is expected to implement the following
-/// methods which take @p f and @p args: `VisitConstant`, `VisitVariable`,
-/// `VisitAddition`, `VisitMultiplication`, `VisitDivision`, `VisitPow`.
+/// methods which take @p f and @p args: `VisitConstant`, `VisitRealConstant`,
+/// `VisitVariable`, `VisitAddition`, `VisitMultiplication`, `VisitDivision`,
+/// `VisitPow`.
 ///
 /// @throws std::runtime_error if NaN is detected during a visit.
 ///
@@ -27,6 +28,9 @@ Result VisitPolynomial(Visitor* v, const Expression& e, Args&&... args) {
   switch (e.get_kind()) {
     case ExpressionKind::Constant:
       return v->VisitConstant(e, std::forward<Args>(args)...);
+
+    case ExpressionKind::RealConstant:
+      return v->VisitRealConstant(e, std::forward<Args>(args)...);
 
     case ExpressionKind::Var:
       return v->VisitVariable(e, std::forward<Args>(args)...);
@@ -73,13 +77,15 @@ Result VisitPolynomial(Visitor* v, const Expression& e, Args&&... args) {
   throw std::runtime_error("Should not be reachable.");
 }
 
-/// Calls visitor object @p v with a symbolic-expression @p e, and arguments @p
-/// args. Visitor object is expected to implement the following methods which
-/// take @p f and @p args: `VisitConstant`, `VisitVariable`, `VisitAddition`,
-/// `VisitMultiplication`, `VisitDivision`, `VisitLog`, `VisitAbs`, `VisitExp`,
-/// `VisitSqrt`, `VisitPow`, `VisitSin`, `VisitCos`, `VisitTan`, `VisitAsin`,
-/// `VisitAtan`, `VisitAtan2`, `VisitSinh`, `VisitCosh`, `VisitTanh`,
-/// `VisitMin`, `VisitMax`, `VisitIfThenElse`, `VisitUninterpretedFunction.
+/// Calls visitor object @p v with a symbolic-expression @p e, and
+/// arguments @p args. Visitor object is expected to implement the
+/// following methods which take @p f and @p args: `VisitConstant`,
+/// `VisitRealConstant`, `VisitVariable`, `VisitAddition`,
+/// `VisitMultiplication`, `VisitDivision`, `VisitLog`, `VisitAbs`,
+/// `VisitExp`, `VisitSqrt`, `VisitPow`, `VisitSin`, `VisitCos`,
+/// `VisitTan`, `VisitAsin`, `VisitAtan`, `VisitAtan2`, `VisitSinh`,
+/// `VisitCosh`, `VisitTanh`, `VisitMin`, `VisitMax`,
+/// `VisitIfThenElse`, `VisitUninterpretedFunction.
 ///
 /// @throws std::runtime_error if NaN is detected during a visit.
 template <typename Result, typename Visitor, typename... Args>
@@ -87,6 +93,9 @@ Result VisitExpression(Visitor* v, const Expression& e, Args&&... args) {
   switch (e.get_kind()) {
     case ExpressionKind::Constant:
       return v->VisitConstant(e, std::forward<Args>(args)...);
+
+    case ExpressionKind::RealConstant:
+      return v->VisitRealConstant(e, std::forward<Args>(args)...);
 
     case ExpressionKind::Var:
       return v->VisitVariable(e, std::forward<Args>(args)...);

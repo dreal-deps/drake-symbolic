@@ -23,7 +23,7 @@ namespace symbolic {
  * @note It provides virtual function, ExpressionCell::Display, because
  * operator<< is not allowed to be a virtual function.
  */
-class ExpressionCell {
+class ExpressionCell : public std::enable_shared_from_this<ExpressionCell> {
  public:
   /** Returns expression kind. */
   ExpressionKind get_kind() const { return kind_; }
@@ -86,6 +86,8 @@ class ExpressionCell {
   ExpressionCell(ExpressionKind k, size_t hash, bool is_poly);
   /** Default destructor. */
   virtual ~ExpressionCell() = default;
+  /** Returns an expression pointing to this ExpressionCell. */
+  Expression GetExpression() const;
 
  private:
   const ExpressionKind kind_{};
@@ -184,7 +186,7 @@ class ExpressionVar : public ExpressionCell {
   const Variable var_;
 };
 
-/** Symbolic expression representing a constant. */
+/** Symbolic expression representing a floating-point constant (double). */
 class ExpressionConstant : public ExpressionCell {
  public:
   explicit ExpressionConstant(double v);
@@ -202,6 +204,35 @@ class ExpressionConstant : public ExpressionCell {
 
  private:
   const double v_{};
+};
+
+/** Symbolic expression representing a real constant represented by a
+ * double interval [lb, ub].
+ *
+ * Note that the gap between lb and ub should be minimal, that is, the
+ * next machine-representable number of `lb` should be `ub`.
+ */
+class ExpressionRealConstant : public ExpressionCell {
+ public:
+  ExpressionRealConstant(double lb, double ub, bool use_lb_as_representative);
+  double get_lb() const { return lb_; }
+  double get_ub() const { return ub_; }
+  double get_value() const { return use_lb_as_representative_ ? lb_ : ub_; }
+  Variables GetVariables() const override;
+  bool EqualTo(const ExpressionCell& e) const override;
+  bool Less(const ExpressionCell& e) const override;
+  double Evaluate(const Environment& env) const override;
+  Expression Expand() const override;
+  Expression Substitute(
+      const ExpressionSubstitution& expr_subst,
+      const FormulaSubstitution& formula_subst) const override;
+  Expression Differentiate(const Variable& x) const override;
+  std::ostream& Display(std::ostream& os) const override;
+
+ private:
+  const double lb_{};
+  const double ub_{};
+  const bool use_lb_as_representative_{};
 };
 
 /** Symbolic expression representing NaN (not-a-number). */

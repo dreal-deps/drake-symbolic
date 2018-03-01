@@ -24,7 +24,8 @@ namespace symbolic {
 
 /** Kinds of symbolic expressions. */
 enum class ExpressionKind {
-  Constant,               ///< constant (double)
+  Constant,               ///< floating-point constant (double)
+  RealConstant,           ///< real constant (represented by an interval)
   Var,                    ///< variable
   Add,                    ///< addition (+)
   Mul,                    ///< multiplication (*)
@@ -57,6 +58,7 @@ bool operator<(ExpressionKind k1, ExpressionKind k2);
 
 class ExpressionCell;                   // In symbolic_expression_cell.h
 class ExpressionConstant;               // In symbolic_expression_cell.h
+class ExpressionRealConstant;           // In symbolic_expression_cell.h
 class ExpressionVar;                    // In symbolic_expression_cell.h
 class UnaryExpressionCell;              // In symbolic_expression_cell.h
 class BinaryExpressionCell;             // In symbolic_expression_cell.h
@@ -102,7 +104,8 @@ using FormulaSubstitution =
 Its syntax tree is as follows:
 
 @verbatim
-    E := Var | Constant | E + ... + E | E * ... * E | E / E | log(E)
+    E := Var | Constant(double) | RealConstant(double, double)
+       | E + ... + E | E * ... * E | E / E | log(E)
        | abs(E) | exp(E) | sqrt(E) | pow(E, E) | sin(E) | cos(E) | tan(E)
        | asin(E) | acos(E) | atan(E) | atan2(E, E) | sinh(E) | cosh(E) | tanh(E)
        | min(E, E) | max(E, E) | if_then_else(F, E, E) | NaN
@@ -170,7 +173,7 @@ class Expression {
   /** Default constructor. It constructs Zero(). */
   Expression() { *this = Zero(); }
 
-  /** Constructs a constant. */
+  /** Constructs a constant (floating-point). */
   // NOLINTNEXTLINE(runtime/explicit): This conversion is desirable.
   Expression(double d);
   /** Constructs an expression from @p var.
@@ -395,6 +398,7 @@ class Expression {
   friend void swap(Expression& a, Expression& b) { std::swap(a.ptr_, b.ptr_); }
 
   friend bool is_constant(const Expression& e);
+  friend bool is_real_constant(const Expression& e);
   friend bool is_variable(const Expression& e);
   friend bool is_addition(const Expression& e);
   friend bool is_multiplication(const Expression& e);
@@ -460,6 +464,7 @@ class Expression {
 
   friend class ExpressionAddFactory;
   friend class ExpressionMulFactory;
+  friend class ExpressionCell;
 
  private:
   explicit Expression(std::shared_ptr<const ExpressionCell> ptr);
@@ -516,10 +521,12 @@ void swap(Expression& a, Expression& b);
 
 std::ostream& operator<<(std::ostream& os, const Expression& e);
 
-/** Checks if @p e is a constant expression. */
+/** Checks if @p e is a floating-point constant expression. */
 bool is_constant(const Expression& e);
-/** Checks if @p e is a constant expression representing @p v. */
+/** Checks if @p e is a floating-point constant expression representing @p v. */
 bool is_constant(const Expression& e, double v);
+/** Checks if @p e is a real constant expression. */
+bool is_real_constant(const Expression& e);
 /** Checks if @p e is 0.0. */
 bool is_zero(const Expression& e);
 /** Checks if @p e is 1.0. */
@@ -577,47 +584,55 @@ bool is_if_then_else(const Expression& e);
 /** Checks if @p e is an uninterpreted-function expression. */
 bool is_uninterpreted_function(const Expression& e);
 
-/** Returns the constant value of the constant expression @p e.
- *  \pre{@p e is a constant expression.}
+/** Returns the constant value of the floating-point constant expression @p e.
+ *  @pre @p e is a constant expression.
  */
 double get_constant_value(const Expression& e);
+/** Returns the lower-bound of the floating-point constant expression @p e.
+ *  @pre @p e is a real constant expression.
+ */
+double get_lb_of_real_constant(const Expression& e);
+/** Returns the upper-bound of the floating-point constant expression @p e.
+ *  @pre @p e is a real constant expression.
+ */
+double get_ub_of_real_constant(const Expression& e);
 /** Returns the embedded variable in the variable expression @p e.
- *  \pre{@p e is a variable expression.}
+ *  @pre @p e is a variable expression.
  */
 const Variable& get_variable(const Expression& e);
 /** Returns the argument in the unary expression @p e.
- *  \pre{@p e is a unary expression.}
+ *  @pre @p e is a unary expression.
  */
 const Expression& get_argument(const Expression& e);
 /** Returns the first argument of the binary expression @p e.
- *  \pre{@p e is a binary expression.}
+ *  @pre @p e is a binary expression.
  */
 const Expression& get_first_argument(const Expression& e);
 /** Returns the second argument of the binary expression @p e.
- *  \pre{@p e is a binary expression.}
+ *  @pre @p e is a binary expression.
  */
 const Expression& get_second_argument(const Expression& e);
 /** Returns the constant part of the addition expression @p e. For instance,
  *  given 7 + 2 * x + 3 * y, it returns 7.
- *  \pre{@p e is an addition expression.}
+ *  @pre @p e is an addition expression.
  */
 double get_constant_in_addition(const Expression& e);
 /** Returns the map from an expression to its coefficient in the addition
  *  expression @p e. For instance, given 7 + 2 * x + 3 * y, the return value
  *  maps 'x' to 2 and 'y' to 3.
- *  \pre{@p e is an addition expression.}
+ *  @pre @p e is an addition expression.
  */
 const std::map<Expression, double>& get_expr_to_coeff_map_in_addition(
     const Expression& e);
 /** Returns the constant part of the multiplication expression @p e. For
  *  instance, given 7 * x^2 * y^3, it returns 7.
- *  \pre{@p e is a multiplication expression.}
+ *  @pre @p e is a multiplication expression.
  */
 double get_constant_in_multiplication(const Expression& e);
 /** Returns the map from a base expression to its exponent expression in the
  * multiplication expression @p e. For instance, given 7 * x^2 * y^3 * z^x, the
  * return value maps 'x' to 2, 'y' to 3, and 'z' to 'x'.
- *  \pre{@p e is a multiplication expression.}
+ *  @pre @p e is a multiplication expression.
  */
 const std::map<Expression, Expression>&
 get_base_to_exponent_map_in_multiplication(const Expression& e);
@@ -638,7 +653,7 @@ const Expression& get_then_expression(const Expression& e);
 const Expression& get_else_expression(const Expression& e);
 
 /** Returns the name of an uninterpreted-function expression @p e.
- *  \pre{@p e is an uninterpreted-function expression.}
+ *  @pre @p e is an uninterpreted-function expression.
  */
 const std::string& get_uninterpreted_function_name(const Expression& e);
 
