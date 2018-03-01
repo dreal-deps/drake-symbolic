@@ -108,7 +108,7 @@ script:
       --output_base="$HOME/.bazel-output-base" \
       --host_jvm_args=-Xmx500m \
       --host_jvm_args=-Xms500m \
-      test \
+      build \
       --local_resources=${BAZEL_LOCAL_RESOURCES} \
       //...  ${COMPILER} ${BUILD_TYPE} ${CONFIG}
 
