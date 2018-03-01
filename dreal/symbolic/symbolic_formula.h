@@ -398,4 +398,12 @@ struct equal_to<dreal::drake::symbolic::Formula> {
     return lhs.EqualTo(rhs);
   }
 };
+
+template <>
+struct hash<dreal::drake::symbolic::Formula> {
+  size_t operator()(const dreal::drake::symbolic::Formula& f) const {
+    return f.get_hash();
+  }
+};
+
 }  // namespace std

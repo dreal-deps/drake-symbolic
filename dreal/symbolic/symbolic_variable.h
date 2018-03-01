@@ -118,4 +118,12 @@ struct equal_to<dreal::drake::symbolic::Variable> {
     return lhs.equal_to(rhs);
   }
 };
+
+template <>
+struct hash<dreal::drake::symbolic::Variable> {
+  size_t operator()(const dreal::drake::symbolic::Variable& v) const {
+    return v.get_hash();
+  }
+};
+
 }  // namespace std

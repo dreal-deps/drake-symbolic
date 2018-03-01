@@ -695,4 +695,11 @@ struct equal_to<dreal::drake::symbolic::Expression> {
   }
 };
 
+template <>
+struct hash<dreal::drake::symbolic::Expression> {
+  size_t operator()(const dreal::drake::symbolic::Expression& e) const {
+    return e.get_hash();
+  }
+};
+
 }  // namespace std
