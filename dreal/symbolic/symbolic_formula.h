@@ -336,32 +336,32 @@ bool is_forall(const Formula& f);
 const Variable& get_variable(const Formula& f);
 
 /** Returns the lhs-argument of a relational formula @p f.
- *  \pre{@p f is a relational formula.}
+ *  @pre @p f is a relational formula.
  */
 const Expression& get_lhs_expression(const Formula& f);
 
 /** Returns the rhs-argument of a relational formula @p f.
- *  \pre{@p f is a relational formula.}
+ *  @pre @p f is a relational formula.
  */
 const Expression& get_rhs_expression(const Formula& f);
 
 /** Returns the set of formulas in a n-ary formula @p f.
- *  \pre{@p f is a n-ary formula.}
+ *  @pre @p f is a n-ary formula.
  */
 const std::set<Formula>& get_operands(const Formula& f);
 
 /** Returns the formula in a negation formula @p f.
- *  \pre{@p f is a negation formula.}
+ *  @pre @p f is a negation formula.
  */
 const Formula& get_operand(const Formula& f);
 
 /** Returns the quantified variables in a forall formula @p f.
- *  \pre{@p f is a forall formula.}
+ *  @pre @p f is a forall formula.
  */
 const Variables& get_quantified_variables(const Formula& f);
 
 /** Returns the quantified formula in a forall formula @p f.
- *  \pre{@p f is a forall formula.}
+ *  @pre @p f is a forall formula.
  */
 const Formula& get_quantified_formula(const Formula& f);
 
