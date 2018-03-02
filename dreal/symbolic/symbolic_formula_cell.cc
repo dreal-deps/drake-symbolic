@@ -33,6 +33,8 @@ using std::string;
 FormulaCell::FormulaCell(const FormulaKind k, const size_t hash)
     : kind_{k}, hash_{hash_combine(hash, static_cast<size_t>(kind_))} {}
 
+Formula FormulaCell::GetFormula() const { return Formula{shared_from_this()}; }
+
 RelationalFormulaCell::RelationalFormulaCell(const FormulaKind k,
                                              const Expression& lhs,
                                              const Expression& rhs)
@@ -212,7 +214,7 @@ Formula FormulaVar::Substitute(const ExpressionSubstitution&,
   if (it != formula_subst.end()) {
     return it->second;
   }
-  return Formula{var_};
+  return GetFormula();
 }
 
 ostream& FormulaVar::Display(ostream& os) const { return os << var_; }
@@ -254,8 +256,15 @@ bool FormulaEq::Evaluate(const Environment& env) const {
 
 Formula FormulaEq::Substitute(const ExpressionSubstitution& expr_subst,
                               const FormulaSubstitution& formula_subst) const {
-  return get_lhs_expression().Substitute(expr_subst, formula_subst) ==
-         get_rhs_expression().Substitute(expr_subst, formula_subst);
+  const Expression& lhs{get_lhs_expression()};
+  const Expression& rhs{get_rhs_expression()};
+  const Expression lhs_subst{lhs.Substitute(expr_subst, formula_subst)};
+  const Expression rhs_subst{rhs.Substitute(expr_subst, formula_subst)};
+  if (!lhs.EqualTo(lhs_subst) || !rhs.EqualTo(rhs_subst)) {
+    return lhs_subst == rhs_subst;
+  } else {
+    return GetFormula();
+  }
 }
 
 ostream& FormulaEq::Display(ostream& os) const {
@@ -273,8 +282,15 @@ bool FormulaNeq::Evaluate(const Environment& env) const {
 
 Formula FormulaNeq::Substitute(const ExpressionSubstitution& expr_subst,
                                const FormulaSubstitution& formula_subst) const {
-  return get_lhs_expression().Substitute(expr_subst, formula_subst) !=
-         get_rhs_expression().Substitute(expr_subst, formula_subst);
+  const Expression& lhs{get_lhs_expression()};
+  const Expression& rhs{get_rhs_expression()};
+  const Expression lhs_subst{lhs.Substitute(expr_subst, formula_subst)};
+  const Expression rhs_subst{rhs.Substitute(expr_subst, formula_subst)};
+  if (!lhs.EqualTo(lhs_subst) || !rhs.EqualTo(rhs_subst)) {
+    return lhs_subst != rhs_subst;
+  } else {
+    return GetFormula();
+  }
 }
 
 ostream& FormulaNeq::Display(ostream& os) const {
@@ -292,8 +308,15 @@ bool FormulaGt::Evaluate(const Environment& env) const {
 
 Formula FormulaGt::Substitute(const ExpressionSubstitution& expr_subst,
                               const FormulaSubstitution& formula_subst) const {
-  return get_lhs_expression().Substitute(expr_subst, formula_subst) >
-         get_rhs_expression().Substitute(expr_subst, formula_subst);
+  const Expression& lhs{get_lhs_expression()};
+  const Expression& rhs{get_rhs_expression()};
+  const Expression lhs_subst{lhs.Substitute(expr_subst, formula_subst)};
+  const Expression rhs_subst{rhs.Substitute(expr_subst, formula_subst)};
+  if (!lhs.EqualTo(lhs_subst) || !rhs.EqualTo(rhs_subst)) {
+    return lhs_subst > rhs_subst;
+  } else {
+    return GetFormula();
+  }
 }
 
 ostream& FormulaGt::Display(ostream& os) const {
@@ -311,8 +334,15 @@ bool FormulaGeq::Evaluate(const Environment& env) const {
 
 Formula FormulaGeq::Substitute(const ExpressionSubstitution& expr_subst,
                                const FormulaSubstitution& formula_subst) const {
-  return get_lhs_expression().Substitute(expr_subst, formula_subst) >=
-         get_rhs_expression().Substitute(expr_subst, formula_subst);
+  const Expression& lhs{get_lhs_expression()};
+  const Expression& rhs{get_rhs_expression()};
+  const Expression lhs_subst{lhs.Substitute(expr_subst, formula_subst)};
+  const Expression rhs_subst{rhs.Substitute(expr_subst, formula_subst)};
+  if (!lhs.EqualTo(lhs_subst) || !rhs.EqualTo(rhs_subst)) {
+    return lhs_subst >= rhs_subst;
+  } else {
+    return GetFormula();
+  }
 }
 
 ostream& FormulaGeq::Display(ostream& os) const {
@@ -330,8 +360,15 @@ bool FormulaLt::Evaluate(const Environment& env) const {
 
 Formula FormulaLt::Substitute(const ExpressionSubstitution& expr_subst,
                               const FormulaSubstitution& formula_subst) const {
-  return get_lhs_expression().Substitute(expr_subst, formula_subst) <
-         get_rhs_expression().Substitute(expr_subst, formula_subst);
+  const Expression& lhs{get_lhs_expression()};
+  const Expression& rhs{get_rhs_expression()};
+  const Expression lhs_subst{lhs.Substitute(expr_subst, formula_subst)};
+  const Expression rhs_subst{rhs.Substitute(expr_subst, formula_subst)};
+  if (!lhs.EqualTo(lhs_subst) || !rhs.EqualTo(rhs_subst)) {
+    return lhs_subst < rhs_subst;
+  } else {
+    return GetFormula();
+  }
 }
 
 ostream& FormulaLt::Display(ostream& os) const {
@@ -349,8 +386,15 @@ bool FormulaLeq::Evaluate(const Environment& env) const {
 
 Formula FormulaLeq::Substitute(const ExpressionSubstitution& expr_subst,
                                const FormulaSubstitution& formula_subst) const {
-  return get_lhs_expression().Substitute(expr_subst, formula_subst) <=
-         get_rhs_expression().Substitute(expr_subst, formula_subst);
+  const Expression& lhs{get_lhs_expression()};
+  const Expression& rhs{get_rhs_expression()};
+  const Expression lhs_subst{lhs.Substitute(expr_subst, formula_subst)};
+  const Expression rhs_subst{rhs.Substitute(expr_subst, formula_subst)};
+  if (!lhs.EqualTo(lhs_subst) || !rhs.EqualTo(rhs_subst)) {
+    return lhs_subst <= rhs_subst;
+  } else {
+    return GetFormula();
+  }
 }
 
 ostream& FormulaLeq::Display(ostream& os) const {
@@ -378,14 +422,25 @@ bool FormulaAnd::Evaluate(const Environment& env) const {
 Formula FormulaAnd::Substitute(const ExpressionSubstitution& expr_subst,
                                const FormulaSubstitution& formula_subst) const {
   Formula ret{Formula::True()};
+  bool changed{false};
   for (const auto& f : get_operands()) {
-    ret = ret && f.Substitute(expr_subst, formula_subst);
+    const Formula f_subst{f.Substitute(expr_subst, formula_subst)};
+    if (!f.EqualTo(f_subst)) {
+      ret = ret && f_subst;
+      changed = true;
+    } else {
+      ret = ret && f;
+    }
     // short-circuiting
     if (is_false(ret)) {
       return ret;
     }
   }
-  return ret;
+  if (changed) {
+    return ret;
+  } else {
+    return GetFormula();
+  }
 }
 
 ostream& FormulaAnd::Display(ostream& os) const {
@@ -412,14 +467,25 @@ bool FormulaOr::Evaluate(const Environment& env) const {
 Formula FormulaOr::Substitute(const ExpressionSubstitution& expr_subst,
                               const FormulaSubstitution& formula_subst) const {
   Formula ret{Formula::False()};
+  bool changed{false};
   for (const auto& f : get_operands()) {
-    ret = ret || f.Substitute(expr_subst, formula_subst);
+    const Formula f_subst{f.Substitute(expr_subst, formula_subst)};
+    if (!f.EqualTo(f_subst)) {
+      ret = ret || f_subst;
+      changed = true;
+    } else {
+      ret = ret || f;
+    }
     // short-circuiting
     if (is_true(ret)) {
       return ret;
     }
   }
-  return ret;
+  if (changed) {
+    return ret;
+  } else {
+    return GetFormula();
+  }
 }
 
 ostream& FormulaOr::Display(ostream& os) const {
@@ -451,7 +517,12 @@ bool FormulaNot::Evaluate(const Environment& env) const {
 
 Formula FormulaNot::Substitute(const ExpressionSubstitution& expr_subst,
                                const FormulaSubstitution& formula_subst) const {
-  return !f_.Substitute(expr_subst, formula_subst);
+  const Formula f_subst{f_.Substitute(expr_subst, formula_subst)};
+  if (!f_.EqualTo(f_subst)) {
+    return !f_subst;
+  } else {
+    return GetFormula();
+  }
 }
 
 ostream& FormulaNot::Display(ostream& os) const {
@@ -510,7 +581,12 @@ Formula FormulaForall::Substitute(
       new_expr_subst.erase(var);
     }
   }
-  return forall(vars_, f_.Substitute(new_expr_subst, new_formula_subst));
+  const Formula f_subst{f_.Substitute(new_expr_subst, new_formula_subst)};
+  if (!f_.EqualTo(f_subst)) {
+    return forall(vars_, f_subst);
+  } else {
+    return GetFormula();
+  }
 }
 
 ostream& FormulaForall::Display(ostream& os) const {

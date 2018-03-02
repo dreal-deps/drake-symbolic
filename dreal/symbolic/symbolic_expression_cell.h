@@ -23,7 +23,7 @@ namespace symbolic {
  * @note It provides virtual function, ExpressionCell::Display, because
  * operator<< is not allowed to be a virtual function.
  */
-class ExpressionCell {
+class ExpressionCell : public std::enable_shared_from_this<ExpressionCell> {
  public:
   /** Returns expression kind. */
   ExpressionKind get_kind() const { return kind_; }
@@ -86,6 +86,8 @@ class ExpressionCell {
   ExpressionCell(ExpressionKind k, size_t hash, bool is_poly);
   /** Default destructor. */
   virtual ~ExpressionCell() = default;
+  /** Returns an expression pointing to this ExpressionCell. */
+  Expression GetExpression() const;
 
  private:
   const ExpressionKind kind_{};

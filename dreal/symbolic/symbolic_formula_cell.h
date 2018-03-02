@@ -24,7 +24,7 @@ namespace symbolic {
  * \note It provides virtual function, FormulaCell::Display,
  * because operator<< is not allowed to be a virtual function.
  */
-class FormulaCell {
+class FormulaCell : public std::enable_shared_from_this<FormulaCell> {
  public:
   /** Returns kind of formula. */
   FormulaKind get_kind() const { return kind_; }
@@ -63,6 +63,8 @@ class FormulaCell {
   FormulaCell(FormulaKind k, size_t hash);
   /** Default destructor. */
   virtual ~FormulaCell() = default;
+  /** Returns a Formula pointing to this FormulaCell. */
+  Formula GetFormula() const;
 
  private:
   const FormulaKind kind_{};
