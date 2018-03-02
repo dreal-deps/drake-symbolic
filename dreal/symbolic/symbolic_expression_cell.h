@@ -186,7 +186,7 @@ class ExpressionVar : public ExpressionCell {
   const Variable var_;
 };
 
-/** Symbolic expression representing a constant. */
+/** Symbolic expression representing a floating-point constant (double). */
 class ExpressionConstant : public ExpressionCell {
  public:
   explicit ExpressionConstant(double v);
@@ -204,6 +204,35 @@ class ExpressionConstant : public ExpressionCell {
 
  private:
   const double v_{};
+};
+
+/** Symbolic expression representing a real constant represented by a
+ * double interval [lb, ub].
+ *
+ * Note that the gap between lb and ub should be minimal, that is, the
+ * next machine-representable number of `lb` should be `ub`.
+ */
+class ExpressionRealConstant : public ExpressionCell {
+ public:
+  ExpressionRealConstant(double lb, double ub, bool use_lb_as_representative);
+  double get_lb() const { return lb_; }
+  double get_ub() const { return ub_; }
+  double get_value() const { return use_lb_as_representative_ ? lb_ : ub_; }
+  Variables GetVariables() const override;
+  bool EqualTo(const ExpressionCell& e) const override;
+  bool Less(const ExpressionCell& e) const override;
+  double Evaluate(const Environment& env) const override;
+  Expression Expand() const override;
+  Expression Substitute(
+      const ExpressionSubstitution& expr_subst,
+      const FormulaSubstitution& formula_subst) const override;
+  Expression Differentiate(const Variable& x) const override;
+  std::ostream& Display(std::ostream& os) const override;
+
+ private:
+  const double lb_{};
+  const double ub_{};
+  const bool use_lb_as_representative_{};
 };
 
 /** Symbolic expression representing NaN (not-a-number). */
@@ -786,8 +815,10 @@ class ExpressionUninterpretedFunction : public ExpressionCell {
   const Variables variables_;
 };
 
-/** Checks if @p c is a constant expression. */
+/** Checks if @p c is a floating-point constant expression. */
 bool is_constant(const ExpressionCell& c);
+/** Checks if @p c is a real constant expression. */
+bool is_real_constant(const ExpressionCell& c);
 /** Checks if @p c is a variable expression. */
 bool is_variable(const ExpressionCell& c);
 /** Checks if @p c is an addition expression. */
@@ -845,6 +876,18 @@ std::shared_ptr<const ExpressionConstant> to_constant(
  *  @pre @p *(e.ptr_) is of @c ExpressionConstant.
  */
 std::shared_ptr<const ExpressionConstant> to_constant(const Expression& e);
+
+/** Casts @p expr_ptr of shared_ptr<const ExpressionCell> to
+ *  @c shared_ptr<const ExpressionRealConstant>.
+ *  @pre @p *expr_ptr is of @c ExpressionRealConstant.
+ */
+std::shared_ptr<const ExpressionRealConstant> to_real_constant(
+    const std::shared_ptr<const ExpressionCell>& expr_ptr);
+/** Casts @p e of Expression to @c shared_ptr<const ExpressionRealConstant>.
+ *  @pre @p *(e.ptr_) is of @c ExpressionRealConstant.
+ */
+std::shared_ptr<const ExpressionRealConstant> to_real_constant(
+    const Expression& e);
 
 /** Casts @p expr_ptr of shared_ptr<const ExpressionCell> to
  *  @c shared_ptr<const ExpressionVar>.

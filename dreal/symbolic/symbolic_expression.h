@@ -24,7 +24,8 @@ namespace symbolic {
 
 /** Kinds of symbolic expressions. */
 enum class ExpressionKind {
-  Constant,               ///< constant (double)
+  Constant,               ///< floating-point constant (double)
+  RealConstant,           ///< real constant (represented by an interval)
   Var,                    ///< variable
   Add,                    ///< addition (+)
   Mul,                    ///< multiplication (*)
@@ -57,6 +58,7 @@ bool operator<(ExpressionKind k1, ExpressionKind k2);
 
 class ExpressionCell;                   // In symbolic_expression_cell.h
 class ExpressionConstant;               // In symbolic_expression_cell.h
+class ExpressionRealConstant;           // In symbolic_expression_cell.h
 class ExpressionVar;                    // In symbolic_expression_cell.h
 class UnaryExpressionCell;              // In symbolic_expression_cell.h
 class BinaryExpressionCell;             // In symbolic_expression_cell.h
@@ -102,7 +104,8 @@ using FormulaSubstitution =
 Its syntax tree is as follows:
 
 @verbatim
-    E := Var | Constant | E + ... + E | E * ... * E | E / E | log(E)
+    E := Var | Constant(double) | RealConstant(double, double)
+       | E + ... + E | E * ... * E | E / E | log(E)
        | abs(E) | exp(E) | sqrt(E) | pow(E, E) | sin(E) | cos(E) | tan(E)
        | asin(E) | acos(E) | atan(E) | atan2(E, E) | sinh(E) | cosh(E) | tanh(E)
        | min(E, E) | max(E, E) | if_then_else(F, E, E) | NaN
@@ -170,7 +173,7 @@ class Expression {
   /** Default constructor. It constructs Zero(). */
   Expression() { *this = Zero(); }
 
-  /** Constructs a constant. */
+  /** Constructs a constant (floating-point). */
   // NOLINTNEXTLINE(runtime/explicit): This conversion is desirable.
   Expression(double d);
   /** Constructs an expression from @p var.
@@ -330,6 +333,12 @@ class Expression {
   // NOLINTNEXTLINE(runtime/references) per C++ standard signature.
   friend Expression& operator/=(Expression& lhs, const Expression& rhs);
 
+  /// Creates an real-constant expression represented by [@p lb, @p
+  /// ub]. @p use_lb_as_representative is used to select its
+  /// representative value. If it is true, @p lb is used. Otherwise,
+  /// @p ub is used.
+  friend Expression real_constant(double lb, double ub,
+                                  bool use_lb_as_representative);
   friend Expression log(const Expression& e);
   friend Expression abs(const Expression& e);
   friend Expression exp(const Expression& e);
@@ -395,6 +404,7 @@ class Expression {
   friend void swap(Expression& a, Expression& b) { std::swap(a.ptr_, b.ptr_); }
 
   friend bool is_constant(const Expression& e);
+  friend bool is_real_constant(const Expression& e);
   friend bool is_variable(const Expression& e);
   friend bool is_addition(const Expression& e);
   friend bool is_multiplication(const Expression& e);
@@ -425,7 +435,7 @@ class Expression {
   // symbolic/symbolic_expression_cell.h header.
   friend std::shared_ptr<const ExpressionConstant> to_constant(
       const Expression& e);
-  friend std::shared_ptr<const ExpressionConstant> to_real_constant(
+  friend std::shared_ptr<const ExpressionRealConstant> to_real_constant(
       const Expression& e);
   friend std::shared_ptr<const ExpressionVar> to_variable(const Expression& e);
   friend std::shared_ptr<const UnaryExpressionCell> to_unary(
@@ -482,6 +492,7 @@ Expression operator/(Expression lhs, const Expression& rhs);
 // NOLINTNEXTLINE(runtime/references) per C++ standard signature.
 Expression& operator/=(Expression& lhs, const Expression& rhs);
 
+Expression real_constant(double lb, double ub, bool use_lb_as_representative);
 Expression log(const Expression& e);
 Expression abs(const Expression& e);
 Expression exp(const Expression& e);
@@ -517,10 +528,12 @@ void swap(Expression& a, Expression& b);
 
 std::ostream& operator<<(std::ostream& os, const Expression& e);
 
-/** Checks if @p e is a constant expression. */
+/** Checks if @p e is a floating-point constant expression. */
 bool is_constant(const Expression& e);
-/** Checks if @p e is a constant expression representing @p v. */
+/** Checks if @p e is a floating-point constant expression representing @p v. */
 bool is_constant(const Expression& e, double v);
+/** Checks if @p e is a real constant expression. */
+bool is_real_constant(const Expression& e);
 /** Checks if @p e is 0.0. */
 bool is_zero(const Expression& e);
 /** Checks if @p e is 1.0. */
@@ -579,9 +592,17 @@ bool is_if_then_else(const Expression& e);
 bool is_uninterpreted_function(const Expression& e);
 
 /** Returns the constant value of the floating-point constant expression @p e.
- *  @pre @p e is a constant expression.
+ *  @pre @p e is either a floating-point constant or real constant expression.
  */
 double get_constant_value(const Expression& e);
+/** Returns the lower-bound of the floating-point constant expression @p e.
+ *  @pre @p e is a real constant expression.
+ */
+double get_lb_of_real_constant(const Expression& e);
+/** Returns the upper-bound of the floating-point constant expression @p e.
+ *  @pre @p e is a real constant expression.
+ */
+double get_ub_of_real_constant(const Expression& e);
 /** Returns the embedded variable in the variable expression @p e.
  *  @pre @p e is a variable expression.
  */
