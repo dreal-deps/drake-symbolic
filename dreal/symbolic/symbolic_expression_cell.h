@@ -266,7 +266,7 @@ class ExpressionNaN : public ExpressionCell {
  */
 class ExpressionAdd : public ExpressionCell {
  public:
-  /** Constructs ExpressionAdd from @p constant_term and @term_to_coeff_map.
+  /** Constructs ExpressionAdd from @p constant_term and @p term_to_coeff_map.
    */
   ExpressionAdd(double constant,
                 const std::map<Expression, double>& expr_to_coeff_map);
@@ -317,7 +317,7 @@ class ExpressionAddFactory {
 
   /** Adds @p e to this factory. */
   void AddExpression(const Expression& e);
-  /** Adds ExpressionAdd pointed by @ptr to this factory. */
+  /** Adds ExpressionAdd pointed by @p ptr to this factory. */
   void Add(const std::shared_ptr<const ExpressionAdd>& ptr);
   /** Assigns a factory from a shared pointer to ExpressionAdd.  */
   ExpressionAddFactory& operator=(
@@ -424,7 +424,7 @@ class ExpressionMulFactory {
 
   /** Adds @p e to this factory. */
   void AddExpression(const Expression& e);
-  /** Adds ExpressionMul pointed by @ptr to this factory. */
+  /** Adds ExpressionMul pointed by @p ptr to this factory. */
   void Add(const std::shared_ptr<const ExpressionMul>& ptr);
   /** Assigns a factory from a shared pointer to ExpressionMul.  */
   ExpressionMulFactory& operator=(
@@ -1172,8 +1172,8 @@ std::shared_ptr<const ExpressionIfThenElse> to_if_then_else(
 std::shared_ptr<const ExpressionUninterpretedFunction>
 to_uninterpreted_function(
     const std::shared_ptr<const ExpressionCell>& expr_ptr);
-/** Casts @p e of Expression to @c shared_ptr<const
- * ExpressionUninterpretedFunction>.
+/** Casts @p e of Expression to `shared_ptr<const
+ * ExpressionUninterpretedFunction>`.
  * @pre @c *(e.ptr_) is of @c ExpressionUninterpretedFunction.
  */
 std::shared_ptr<const ExpressionUninterpretedFunction>

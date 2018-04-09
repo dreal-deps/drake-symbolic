@@ -68,7 +68,7 @@ Expression NegateMultiplication(const Expression& e) {
 Expression::Expression(const Variable& var)
     : ptr_{make_shared<ExpressionVar>(var)} {}
 Expression::Expression(const double d) : ptr_{make_cell(d)} {}
-Expression::Expression(shared_ptr<const ExpressionCell> ptr)
+Expression::Expression(std::shared_ptr<const ExpressionCell> ptr)
     : ptr_{std::move(ptr)} {}
 
 ExpressionKind Expression::get_kind() const {

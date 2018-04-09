@@ -14,7 +14,7 @@ namespace drake {
 /// This is especially useful for function-local static variables that are not
 /// trivially destructable.  We shouldn't call their destructor at program exit
 /// because of the "indeterminate order of ... destruction" as mentioned in
-/// cppguide's #Static_and_Global_Variables section, but other solutions to
+/// cppguide's Static_and_Global_Variables section, but other solutions to
 /// this problem place the objects on the heap through an indirection.
 ///
 /// Compared with other approaches, this mechanism more clearly describes the

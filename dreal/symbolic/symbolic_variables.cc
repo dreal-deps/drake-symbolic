@@ -28,7 +28,7 @@ namespace dreal {
 namespace drake {
 namespace symbolic {
 
-Variables::Variables(initializer_list<Variable> init) : vars_(init) {}
+Variables::Variables(std::initializer_list<Variable> init) : vars_(init) {}
 
 size_t Variables::get_hash() const {
   return hash_value<set<Variable>>{}(vars_);
