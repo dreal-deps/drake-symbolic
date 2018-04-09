@@ -77,6 +77,9 @@ class Environment {
    * Variable. Initializes the variables with 0.0. */
   Environment(std::initializer_list<key_type> vars);
 
+  /** Constructs an environment from @p m*/
+  Environment(map m);
+
   /** Returns an iterator to the beginning. */
   iterator begin() { return map_.begin(); }
   /** Returns an iterator to the end. */

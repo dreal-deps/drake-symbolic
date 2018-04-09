@@ -37,17 +37,25 @@ void throw_if_nan(const double v) {
 }
 }  // anonymous namespace
 
-Environment::Environment(const initializer_list<value_type> init) : map_(init) {
+Environment::Environment(const std::initializer_list<value_type> init)
+    : map_(init) {
   for (const auto& p : init) {
     throw_if_dummy(p.first);
     throw_if_nan(p.second);
   }
 }
 
-Environment::Environment(const initializer_list<key_type> vars) {
+Environment::Environment(const std::initializer_list<key_type> vars) {
   for (const auto& var : vars) {
     throw_if_dummy(var);
     map_.emplace(var, 0.0);
+  }
+}
+
+Environment::Environment(Environment::map m) : map_{std::move(m)} {
+  for (const auto& p : map_) {
+    throw_if_dummy(p.first);
+    throw_if_nan(p.second);
   }
 }
 
